@@ -1,18 +1,24 @@
 import { forwardRef, useEffect, useRef, useState } from "react";
-import { Card, CardContent } from "../../client/components/ui/card";
 
-const EXAMPLES_CAROUSEL_INTERVAL = 3000;
-const EXAMPLES_CAROUSEL_SCROLL_TIMEOUT = 200;
+const LOGO_CAROUSEL_INTERVAL = 3000;
+const LOGO_CAROUSEL_SCROLL_TIMEOUT = 200;
 
-interface ExampleApp {
+interface Platform {
   name: string;
-  description: string;
-  imageSrc: string;
-  href: string;
+  logoSrc: string;
 }
 
-const ExamplesCarousel = ({ examples }: { examples: ExampleApp[] }) => {
-  const [currentExample, setCurrentExample] = useState(0);
+const platforms: Platform[] = [
+  { name: "Facebook Marketplace", logoSrc: "/logos/facebook.png" },
+  { name: "IAAI", logoSrc: "/logos/iaai.png" },
+  { name: "North Toronto Auction", logoSrc: "/logos/nta.png" },
+  { name: "ADESA", logoSrc: "/logos/adesa.png" },
+  { name: "Kijiji Autos", logoSrc: "/logos/kijiji.png" },
+  { name: "AutoTrader", logoSrc: "/logos/autotrader.png" },
+];
+
+const LogoCarousel = () => {
+  const [currentPlatform, setCurrentPlatform] = useState(0);
   const [isInView, setIsInView] = useState(false);
   const containerRef = useRef<HTMLDivElement>(null);
   const scrollContainerRef = useRef<HTMLDivElement>(null);
@@ -26,7 +32,7 @@ const ExamplesCarousel = ({ examples }: { examples: ExampleApp[] }) => {
       {
         threshold: 0.5,
         rootMargin: "-200px 0px -100px 0px",
-      },
+      }
     );
 
     if (containerRef.current) {
@@ -45,10 +51,10 @@ const ExamplesCarousel = ({ examples }: { examples: ExampleApp[] }) => {
       clearInterval(intervalRef.current);
     }
 
-    if (isInView && examples.length > 1) {
+    if (isInView && platforms.length > 1) {
       intervalRef.current = setInterval(() => {
-        setCurrentExample((prev) => (prev + 1) % examples.length);
-      }, EXAMPLES_CAROUSEL_INTERVAL);
+        setCurrentPlatform((prev) => (prev + 1) % platforms.length);
+      }, LOGO_CAROUSEL_INTERVAL);
     }
 
     if (scrollTimeoutRef.current) {
@@ -58,18 +64,18 @@ const ExamplesCarousel = ({ examples }: { examples: ExampleApp[] }) => {
     scrollTimeoutRef.current = setTimeout(() => {
       if (scrollContainerRef.current) {
         const scrollContainer = scrollContainerRef.current;
-        const targetCard = scrollContainer.children[currentExample] as
+        const targetLogo = scrollContainer.children[currentPlatform] as
           | HTMLElement
           | undefined;
 
-        if (targetCard) {
+        if (targetLogo) {
           const containerRect = scrollContainer.getBoundingClientRect();
-          const cardRect = targetCard.getBoundingClientRect();
+          const logoRect = targetLogo.getBoundingClientRect();
           const scrollLeft =
-            targetCard.offsetLeft -
+            targetLogo.offsetLeft -
             scrollContainer.offsetLeft -
             containerRect.width / 2 +
-            cardRect.width / 2;
+            logoRect.width / 2;
 
           scrollContainer.scrollTo({
             left: scrollLeft,
@@ -77,7 +83,7 @@ const ExamplesCarousel = ({ examples }: { examples: ExampleApp[] }) => {
           });
         }
       }
-    }, EXAMPLES_CAROUSEL_SCROLL_TIMEOUT);
+    }, LOGO_CAROUSEL_SCROLL_TIMEOUT);
 
     return () => {
       if (intervalRef.current) {
@@ -87,41 +93,41 @@ const ExamplesCarousel = ({ examples }: { examples: ExampleApp[] }) => {
         clearTimeout(scrollTimeoutRef.current);
       }
     };
-  }, [isInView, examples.length, currentExample]);
+  }, [isInView, currentPlatform]);
 
   const handleMouseEnter = (index: number) => {
-    setCurrentExample(index);
+    setCurrentPlatform(index);
 
     if (intervalRef.current) {
       clearInterval(intervalRef.current);
     }
 
-    if (isInView && examples.length > 1) {
+    if (isInView && platforms.length > 1) {
       intervalRef.current = setInterval(() => {
-        setCurrentExample((prev) => (prev + 1) % examples.length);
-      }, EXAMPLES_CAROUSEL_INTERVAL);
+        setCurrentPlatform((prev) => (prev + 1) % platforms.length);
+      }, LOGO_CAROUSEL_INTERVAL);
     }
   };
 
   return (
     <div
       ref={containerRef}
-      className="relative left-1/2 my-16 flex w-screen -translate-x-1/2 flex-col items-center"
+      className="relative my-12 flex w-full flex-col items-center"
     >
-      <h2 className="text-muted-foreground mb-6 text-center font-semibold tracking-wide">
-        Used by:
-      </h2>
-      <div className="w-full max-w-full overflow-hidden">
+      <h3 className="text-muted-foreground mb-6 text-center text-sm font-medium">
+        We scan these platforms daily so you don't have to
+      </h3>
+      <div className="w-full max-w-5xl overflow-hidden">
         <div
-          className="no-scrollbar flex snap-x snap-mandatory gap-4 overflow-x-auto scroll-smooth px-4 pb-10 pt-4"
+          className="no-scrollbar flex snap-x snap-mandatory gap-8 overflow-x-auto scroll-smooth px-4 pb-6"
           ref={scrollContainerRef}
         >
-          {examples.map((example, index) => (
-            <ExampleCard
+          {platforms.map((platform, index) => (
+            <LogoCard
               key={index}
-              example={example}
+              platform={platform}
               index={index}
-              isCurrent={index === currentExample}
+              isCurrent={index === currentPlatform}
               onMouseEnter={handleMouseEnter}
             />
           ))}
@@ -131,47 +137,39 @@ const ExamplesCarousel = ({ examples }: { examples: ExampleApp[] }) => {
   );
 };
 
-interface ExampleCardProps {
-  example: ExampleApp;
+interface LogoCardProps {
+  platform: Platform;
   index: number;
   isCurrent: boolean;
   onMouseEnter: (index: number) => void;
 }
 
-const ExampleCard = forwardRef<HTMLDivElement, ExampleCardProps>(
-  ({ example, index, isCurrent, onMouseEnter }, ref) => {
+const LogoCard = forwardRef<HTMLDivElement, LogoCardProps>(
+  ({ platform, index, isCurrent, onMouseEnter }, ref) => {
     return (
-      <a
-        href={example.href}
-        target="_blank"
-        rel="noopener noreferrer"
-        className="flex-shrink-0 snap-center"
+      <div
+        ref={ref}
+        className="flex-shrink-0 snap-center transition-all duration-200"
         onMouseEnter={() => onMouseEnter(index)}
       >
-        <Card
-          ref={ref}
-          className="w-[280px] overflow-hidden transition-all duration-200 hover:scale-105 sm:w-[320px] md:w-[350px]"
-          variant={isCurrent ? "default" : "faded"}
+        <div
+          className={`flex h-24 w-32 items-center justify-center rounded-lg border bg-background p-4 transition-all duration-200 ${
+            isCurrent
+              ? "scale-110 border-primary shadow-lg"
+              : "border-border opacity-60 grayscale hover:opacity-100 hover:grayscale-0"
+          }`}
         >
-          <CardContent className="h-full p-0">
-            <img
-              src={example.imageSrc}
-              alt={example.name}
-              className="aspect-video h-auto w-full"
-            />
-            <div className="p-4">
-              <p className="font-bold">{example.name}</p>
-              <p className="text-muted-foreground text-xs">
-                {example.description}
-              </p>
-            </div>
-          </CardContent>
-        </Card>
-      </a>
+          <img
+            src={platform.logoSrc}
+            alt={platform.name}
+            className="h-auto max-h-16 w-auto max-w-full object-contain"
+          />
+        </div>
+      </div>
     );
-  },
+  }
 );
 
-ExampleCard.displayName = "ExampleCard";
+LogoCard.displayName = "LogoCard";
 
-export default ExamplesCarousel;
+export default LogoCarousel;

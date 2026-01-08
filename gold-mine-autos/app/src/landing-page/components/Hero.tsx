@@ -11,8 +11,12 @@ export default function Hero() {
       <div className="md:p-8">
         <div className="max-w-8xl mx-auto px-6 lg:px-8">
           <div className="lg:mb-18 mx-auto max-w-3xl text-center">
-            <h1 className="text-foreground text-5xl font-bold sm:text-6xl">
+            {/* <h1 className="text-foreground text-5xl font-bold sm:text-6xl">
               We Find The Cars That Make You{" "}
+              <span className="text-gradient-primary">Money</span>
+            </h1> */}
+            <h1 className="text-foreground text-5xl font-bold sm:text-6xl">
+              We Only Source Cars That Make You{" "}
               <span className="text-gradient-primary">Money</span>
             </h1>
             {/* <h1 className="text-foreground text-5xl font-bold sm:text-6xl">

@@ -48,7 +48,7 @@ export default function NavBar({
 
   return (
     <>
-      {isLandingPage}
+      {isLandingPage && <Announcement />}
       <header
         className={cn(
           "sticky top-0 z-50 transition-all duration-300",
