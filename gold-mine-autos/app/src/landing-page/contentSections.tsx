@@ -1,10 +1,10 @@
 import daBoiAvatar from "../client/static/da-boi.webp";
-import kivo from "../client/static/examples/kivo.webp";
-import messync from "../client/static/examples/messync.webp";
-import microinfluencerClub from "../client/static/examples/microinfluencers.webp";
-import promptpanda from "../client/static/examples/promptpanda.webp";
-import reviewradar from "../client/static/examples/reviewradar.webp";
-import scribeist from "../client/static/examples/scribeist.webp";
+import kivo from "../client/static/examples/iaai_logo.png";
+import messync from "../client/static/examples/nta_logo.jpg";
+import microinfluencerClub from "../client/static/examples/copart_logo.svg";
+import promptpanda from "../client/static/examples/adesa_auction.svg";
+import reviewradar from "../client/static/examples/manheim_logo.png";
+import fb_logo from "../client/static/examples/fb_log.png";
 import searchcraft from "../client/static/examples/searchcraft.webp";
 import { BlogUrl, DocsUrl } from "../shared/common";
 import type { GridFeature } from "./components/FeaturesGrid";
@@ -122,45 +122,32 @@ export const footerNavigation = {
 
 export const examples = [
   {
-    name: "Example #1",
-    description: "Describe your example here.",
+    name: "IAAI Canada",
+    // description: "Describe your example here.",
     imageSrc: kivo,
     href: "#",
   },
   {
-    name: "Example #2",
-    description: "Describe your example here.",
+    name: "North Toronto Auction",
     imageSrc: messync,
     href: "#",
   },
   {
-    name: "Example #3",
-    description: "Describe your example here.",
+    name: "Copart Canada",
+
     imageSrc: microinfluencerClub,
     href: "#",
   },
   {
-    name: "Example #4",
-    description: "Describe your example here.",
+    name: "Adesa Canada",
+
     imageSrc: promptpanda,
     href: "#",
   },
   {
-    name: "Example #5",
-    description: "Describe your example here.",
-    imageSrc: reviewradar,
-    href: "#",
-  },
-  {
-    name: "Example #6",
-    description: "Describe your example here.",
-    imageSrc: scribeist,
-    href: "#",
-  },
-  {
-    name: "Example #7",
-    description: "Describe your example here.",
-    imageSrc: searchcraft,
+    name: "Facebook Marketplace",
+
+    imageSrc: fb_logo,
     href: "#",
   },
 ];

@@ -5,7 +5,7 @@ import openSaasBannerLight from "../../client/static/open-saas-banner-light.svg"
 
 export default function Hero() {
   return (
-    <div className="relative w-full pt-14">
+    <div className="relative w-full pt-14 pb-0">
       <TopGradient />
       <BottomGradient />
       <div className="md:p-8">

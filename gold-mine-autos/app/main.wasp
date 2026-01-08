@@ -3,10 +3,10 @@ app OpenSaaS {
     version: "^0.20.0"
   },
 
-  title: "My Open SaaS App",
+  title: "GoldMine Autos",
 
   head: [
-    "<link rel='icon' href='/favicon.ico' />",
+    "<link rel='icon' href='/gma_logo.png' />",
     "<meta charset='utf-8' />",
     "<meta name='description' content='Your apps main description and features.' />",
     "<meta name='author' content='Your (App) Name' />",
