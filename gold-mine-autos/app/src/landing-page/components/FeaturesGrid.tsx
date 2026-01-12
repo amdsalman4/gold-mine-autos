@@ -1,4 +1,5 @@
 import React from "react";
+import { LucideIcon } from "lucide-react";
 import {
   Card,
   CardContent,
@@ -10,7 +11,7 @@ import { Feature } from "./Features";
 import SectionTitle from "./SectionTitle";
 
 export interface GridFeature extends Omit<Feature, "icon"> {
-  icon?: React.ReactNode;
+  icon?: LucideIcon; // Changed from React.ReactNode
   emoji?: string;
   direction?: "col" | "row" | "col-reverse" | "row-reverse";
   align?: "center" | "left";
@@ -30,13 +31,13 @@ const FeaturesGrid = ({ features, className = "" }: FeaturesGridProps) => {
       id="features"
     >
       <SectionTitle
-        title="Features"
-        description="These are some of the features of the product."
+        title="Find Profitable Deals Before Your Competition"
+        description="All Canadian auctions, one search. Instant alerts on new inventory and profit calculations to maximize your margins."
       />
       <div
         className={cn(
           "mx-4 grid auto-rows-[minmax(140px,auto)] grid-cols-2 gap-4 md:mx-6 md:grid-cols-4 lg:mx-8 lg:grid-cols-6",
-          className,
+          className
         )}
       >
         {features.map((feature) => (
@@ -53,7 +54,7 @@ const FeaturesGrid = ({ features, className = "" }: FeaturesGridProps) => {
 function FeaturesGridItem({
   name,
   description,
-  icon,
+  icon: Icon, // Rename to capital I to indicate it's a component
   emoji,
   href,
   direction = "col",
@@ -81,15 +82,15 @@ function FeaturesGridItem({
     <Card
       className={cn(
         "h-full min-h-[140px] cursor-pointer transition-all duration-300 hover:shadow-lg",
-        gridFeatureSizeToClasses[size],
+        gridFeatureSizeToClasses[size]
       )}
       variant="bento"
     >
       <CardContent className="flex h-full flex-col items-center justify-center p-4">
-        {fullWidthIcon && (icon || emoji) ? (
+        {fullWidthIcon && (Icon || emoji) ? (
           <div className="mb-3 flex w-full items-center justify-center">
-            {icon ? (
-              icon
+            {Icon ? (
+              <Icon className="h-10 w-10 text-primary" />
             ) : emoji ? (
               <span className="text-4xl">{emoji}</span>
             ) : null}
@@ -101,12 +102,12 @@ function FeaturesGridItem({
               directionToClass[direction],
               align === "center"
                 ? "items-center justify-center"
-                : "justify-start",
+                : "justify-start"
             )}
           >
             <div className="flex h-10 w-10 items-center justify-center rounded-lg">
-              {icon ? (
-                icon
+              {Icon ? (
+                <Icon className="h-6 w-6 text-primary" />
               ) : emoji ? (
                 <span className="text-2xl">{emoji}</span>
               ) : null}
@@ -118,7 +119,7 @@ function FeaturesGridItem({
             </CardTitle>
           </div>
         )}
-        {fullWidthIcon && (icon || emoji) && (
+        {fullWidthIcon && (Icon || emoji) && (
           <CardTitle className="mb-2 text-center">{name}</CardTitle>
         )}
         <CardDescription
@@ -126,7 +127,7 @@ function FeaturesGridItem({
             "text-xs leading-relaxed",
             fullWidthIcon || direction === "col" || align === "center"
               ? "text-center"
-              : "text-left",
+              : "text-left"
           )}
         >
           {description}

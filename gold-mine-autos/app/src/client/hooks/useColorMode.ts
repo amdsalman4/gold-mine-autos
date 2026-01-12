@@ -2,15 +2,18 @@ import { useEffect } from "react";
 import useLocalStorage from "./useLocalStorage";
 
 export default function useColorMode() {
-  const [colorMode, setColorMode] = useLocalStorage("color-theme", "light");
+  // Default to dark mode. Stored under `color-theme` in localStorage.
+  const [colorMode, setColorMode] = useLocalStorage("color-theme", "dark");
 
   useEffect(() => {
     const className = "dark";
-    const bodyClass = window.document.body.classList;
+    // Use documentElement (the <html> element) so Tailwind's `dark:` class variants
+    // work reliably across the app.
+    const rootClass = window.document.documentElement.classList;
 
     colorMode === "dark"
-      ? bodyClass.add(className)
-      : bodyClass.remove(className);
+      ? rootClass.add(className)
+      : rootClass.remove(className);
   }, [colorMode]);
 
   return [colorMode, setColorMode];

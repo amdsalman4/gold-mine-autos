@@ -21,9 +21,9 @@ export default function LandingPage() {
         <Hero />
         <ExamplesCarousel examples={examples} />
         <HowItWorks />
-        <AIReady />
+
         <FeaturesGrid features={features} />
-        <Testimonials testimonials={testimonials} />
+        {/* <Testimonials testimonials={testimonials} /> */}
         <FAQ faqs={faqs} />
       </main>
       <Footer footerNavigation={footerNavigation} />
