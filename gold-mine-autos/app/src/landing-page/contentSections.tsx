@@ -14,6 +14,8 @@ import promptpanda from "../client/static/examples/adesa_auction.svg";
 import reviewradar from "../client/static/examples/manheim_logo.png";
 import fb_logo from "../client/static/examples/fb_log.png";
 import searchcraft from "../client/static/examples/searchcraft.webp";
+import wholesale_logo from "../client/static/examples/wholesaleX_logo.png";
+import openlane_log from "../client/static/examples/OPENLANE_LOGO.png";
 import { BlogUrl, DocsUrl } from "../shared/common";
 import type { GridFeature } from "./components/FeaturesGrid";
 
@@ -132,15 +134,16 @@ export const faqs = [
 ];
 
 export const footerNavigation = {
-  app: [
-    { name: "Documentation", href: DocsUrl },
-    { name: "Blog", href: BlogUrl },
-  ],
-  company: [
-    { name: "About", href: "https://wasp.sh" },
-    { name: "Privacy", href: "#" },
-    { name: "Terms of Service", href: "#" },
-  ],
+  // app: [
+  //   { name: "Documentation", href: DocsUrl },
+  //   { name: "Blog", href: BlogUrl },
+  // ],
+  // company: [
+  //   { name: "About", href: "https://wasp.sh" },
+  //   { name: "Privacy", href: "#" },
+  //   { name: "Terms of Service", href: "#" },
+  // ],
+  footnote: "2026 © Gold Mine Autos. All rights reserved.",
 };
 
 export const examples = [
@@ -162,15 +165,27 @@ export const examples = [
     href: "#",
   },
   {
+    name: "WholesaleXpress",
+
+    imageSrc: wholesale_logo,
+    href: "#",
+  },
+  {
+    name: "OpenLane",
+
+    imageSrc: openlane_log,
+    href: "#",
+  },
+  {
     name: "Adesa Canada",
 
     imageSrc: promptpanda,
     href: "#",
   },
-  {
-    name: "Facebook Marketplace",
+  // {
+  //   name: "Facebook Marketplace",
 
-    imageSrc: fb_logo,
-    href: "#",
-  },
+  //   imageSrc: fb_logo,
+  //   href: "#",
+  // },
 ];

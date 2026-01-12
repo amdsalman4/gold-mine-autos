@@ -22,7 +22,7 @@ export default function LandingPage() {
         <ExamplesCarousel examples={examples} />
         <HowItWorks />
 
-        <FeaturesGrid features={features} />
+        {/* <FeaturesGrid features={features} /> */}
         {/* <Testimonials testimonials={testimonials} /> */}
         <FAQ faqs={faqs} />
       </main>

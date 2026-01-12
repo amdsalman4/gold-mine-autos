@@ -55,7 +55,7 @@ export default function HowItWorks() {
           return (
             <article
               key={step.id}
-              className="flex w-full flex-row items-start gap-4 rounded-lg border p-6 md:flex-1"
+              className="flex w-full flex-row items-start gap-4 rounded-lg border p-10 md:flex-1"
               aria-labelledby={`howitworks-step-${step.id}`}
             >
               <div className="from-accent to-secondary text-primary-foreground flex h-12 w-12 flex-none items-center justify-center rounded-full bg-gradient-to-r">
