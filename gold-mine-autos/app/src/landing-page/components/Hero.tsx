@@ -15,17 +15,17 @@ export default function Hero() {
               We Find The Cars That Make You{" "}
               <span className="text-gradient-primary">Money</span>
             </h1> */}
-            <h1 className="text-foreground text-5xl font-bold sm:text-6xl">
+            {/* <h1 className="text-foreground text-5xl font-bold sm:text-6xl">
               We Only Source Cars That Make You{" "}
               <span className="text-gradient-primary">Money</span>
-            </h1>
-            {/* <h1 className="text-foreground text-5xl font-bold sm:text-6xl">
-              High Profit Cars. Delivered Daily.
             </h1> */}
+            <h1 className="text-foreground text-5xl font-bold sm:text-6xl">
+              We Only Source Cars That Make Dealer's Money
+            </h1>
             <p className="text-muted-foreground mx-auto mt-6 max-w-2xl text-lg leading-8">
-              Double your margins and save 12+ hours a week. We deliver
-              high-profit car opportunities to your inbox — daily. Exclusively
-              for Ontario dealers.
+              Browse 500+ pre-vetted, high-margin deals updated daily -
+              guaranteed to double your margins and save 12+ hours weekly. Stop
+              sorting through junk at auctions.
             </p>
 
             <div className="mt-10 flex items-center justify-center gap-x-6">
