@@ -38,8 +38,9 @@ const steps: Step[] = [
 export default function HowItWorks() {
   return (
     <section
+      id="how-it-works"
       aria-labelledby="howitworks-heading"
-      className="mx-auto max-w-7xl px-4 py-12"
+      className="mx-auto mt-24 max-w-4xl px-6 pb-8 sm:pb-24 sm:pt-12 lg:max-w-7xl lg:px-8 lg:py-32"
     >
       <SectionTitle
         title={"How it works"}

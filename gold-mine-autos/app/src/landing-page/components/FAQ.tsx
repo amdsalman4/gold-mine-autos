@@ -14,7 +14,10 @@ interface FAQ {
 
 export default function FAQ({ faqs }: { faqs: FAQ[] }) {
   return (
-    <div className="mx-auto mt-32 max-w-4xl px-6 pb-8 sm:pb-24 sm:pt-12 lg:max-w-7xl lg:px-8 lg:py-32">
+    <div
+      id="faq"
+      className="mx-auto mt-24 max-w-4xl px-6 pb-8 sm:pb-24 sm:pt-12 lg:max-w-7xl lg:px-8 lg:py-32"
+    >
       <h2 className="text-foreground mb-12 text-center text-4xl font-bold leading-10 tracking-tight">
         Frequently asked questions
       </h2>

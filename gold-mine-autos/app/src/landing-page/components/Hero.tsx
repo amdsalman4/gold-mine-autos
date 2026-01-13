@@ -20,7 +20,8 @@ export default function Hero() {
               <span className="text-gradient-primary">Money</span>
             </h1> */}
             <h1 className="text-foreground text-5xl font-bold sm:text-6xl">
-              We Only Source Cars That Make Dealer's Money
+              We Only Source Cars That Make Dealers{" "}
+              <span className="text-gradient-primary">Money</span>
             </h1>
             <p className="text-muted-foreground mx-auto mt-6 max-w-2xl text-lg leading-8">
               Browse 500+ pre-vetted, high-margin deals updated daily -
