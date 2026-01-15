@@ -23,7 +23,7 @@ import {
   SubscriptionStatus,
 } from "./plans";
 
-const bestDealPaymentPlanId: PaymentPlanId = PaymentPlanId.Pro;
+const bestDealPaymentPlanId: PaymentPlanId = PaymentPlanId.Hobby;
 
 interface PaymentPlanCard {
   name: string;
@@ -34,22 +34,34 @@ interface PaymentPlanCard {
 
 export const paymentPlanCards: Record<PaymentPlanId, PaymentPlanCard> = {
   [PaymentPlanId.Hobby]: {
-    name: prettyPaymentPlanName(PaymentPlanId.Hobby),
-    price: "$9.99",
-    description: "All you need to get started",
-    features: ["Limited monthly usage", "Basic support"],
+    name: "Premium",
+    price: "$197",
+    description:
+      "Access to all pre-vetted, high-margin vehicle listings from IAAI, Copart, NTA, Adesa, and Facebook Marketplace",
+    features: [
+      "All high-margin listings with profit breakdowns",
+      "Email alerts for new inventory",
+      "Smart filters (make, model, year, price)",
+      "Save up to 10 searches",
+      "5 custom car requests per month",
+      "Standard support",
+    ],
   },
   [PaymentPlanId.Pro]: {
-    name: prettyPaymentPlanName(PaymentPlanId.Pro),
-    price: "$19.99",
-    description: "Our most popular plan",
-    features: ["Unlimited monthly usage", "Priority customer support"],
-  },
-  [PaymentPlanId.Credits10]: {
-    name: prettyPaymentPlanName(PaymentPlanId.Credits10),
-    price: "$9.99",
-    description: "One-time purchase of 10 credits for your account",
-    features: ["Use credits for e.g. OpenAI API calls", "No expiration date"],
+    name: "Pro",
+    price: "$397",
+    description:
+      "Everything in Premium plus 24-hour early access to new listings, unlimited searches, and advanced analytics",
+    features: [
+      "Everything in Premium",
+      "24-hour early access to new listings",
+      "Unlimited saved searches",
+      "Unlimited custom car requests",
+      "Priority email alerts (instant)",
+      "Advanced profit analytics & market trends",
+      "Dedicated account manager",
+      "Priority support",
+    ],
   },
 };
 
@@ -93,7 +105,7 @@ const PricingPage = () => {
       } else {
         setErrorMessage("Error processing payment. Please try again later.");
       }
-      setIsPaymentLoading(false); // We only set this to false here and not in the try block because we redirect to the checkout url within the same window
+      setIsPaymentLoading(false);
     }
   }
 
@@ -121,24 +133,20 @@ const PricingPage = () => {
       <div className="mx-auto max-w-7xl px-6 lg:px-8">
         <div id="pricing" className="mx-auto max-w-4xl text-center">
           <h2 className="text-foreground mt-2 text-4xl font-bold tracking-tight sm:text-5xl">
-            Pick your <span className="text-primary">pricing</span>
+            Invest in Better Inventory
           </h2>
         </div>
         <p className="text-muted-foreground mx-auto mt-6 max-w-2xl text-center text-lg leading-8">
-          Choose between Stripe, LemonSqueezy or Polar as your payment provider.
-          Just add your Product IDs! Try it out below with test credit card
-          number <br />
-          <span className="bg-muted text-muted-foreground rounded-md px-2 py-1 font-mono text-sm">
-            4242 4242 4242 4242 4242
-          </span>
+          One profitable car pays for months of service. Choose the plan that
+          fits your dealership and start finding high-margin inventory today.
         </p>
         {errorMessage && (
           <Alert variant="destructive" className="mt-8">
             <AlertDescription>{errorMessage}</AlertDescription>
           </Alert>
         )}
-        <div className="isolate mx-auto mt-16 grid max-w-md grid-cols-1 gap-y-8 sm:mt-20 lg:mx-0 lg:max-w-none lg:grid-cols-3 lg:gap-x-8">
-          {Object.values(PaymentPlanId).map((planId) => (
+        <div className="isolate mx-auto mt-16 grid max-w-md grid-cols-1 gap-y-8 sm:mt-20 lg:mx-0 lg:max-w-none lg:grid-cols-2 lg:gap-x-8">
+          {[PaymentPlanId.Hobby, PaymentPlanId.Pro].map((planId) => (
             <Card
               key={planId}
               className={cn(
@@ -148,7 +156,7 @@ const PricingPage = () => {
                     planId === bestDealPaymentPlanId,
                   "ring-border ring-1 lg:my-8":
                     planId !== bestDealPaymentPlanId,
-                },
+                }
               )}
             >
               {planId === bestDealPaymentPlanId && (
