@@ -140,6 +140,7 @@ model Listing {
   recommendedMaxBid         Float           // Conservative bid ceiling
   absoluteMaxBid            Float           // Absolute ceiling (riskier)
   profitMargin              Float           // estimatedMarketValue - recommendedMaxBid - all costs
+  estimatedTotalInvestment   Float
   
   // Report Details - Main Selling Points
   mainPoints                String[]        // ["One owner", "Charity car", "No bidders yet"]

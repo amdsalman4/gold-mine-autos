@@ -314,3 +314,16 @@ page AdminMessagesPage {
   component: import AdminMessages from "@src/admin/dashboards/messages/MessagesPage"
 }
 //#endregion
+
+//#region Inventory
+route InventoryRoute { path: "/inventory", to: InventoryPage }
+page InventoryPage {
+  authRequired: true,
+  component: import InventoryPage from "@src/inventory/InventoryPage"
+}
+
+query getAllListings {
+  fn: import { getAllListings } from "@src/inventory/operations",
+  entities: [Listing]
+}
+//#endregion
