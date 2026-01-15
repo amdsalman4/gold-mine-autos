@@ -26,7 +26,7 @@ export default function LandingPage() {
         {/* <Testimonials testimonials={testimonials} /> */}
         <FAQ faqs={faqs} />
       </main>
-      <Footer footerNavigation={footerNavigation} />
+      {/* <Footer footerNavigation={footerNavigation} /> */}
     </div>
   );
 }

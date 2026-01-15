@@ -149,36 +149,37 @@ export const footerNavigation = {
 export const examples = [
   {
     name: "IAAI Canada",
-    // description: "Describe your example here.",
+    description: "",
     imageSrc: kivo,
     href: "#",
   },
   {
     name: "North Toronto Auction",
+    description: "",
     imageSrc: messync,
     href: "#",
   },
   {
     name: "Copart Canada",
-
+    description: "",
     imageSrc: microinfluencerClub,
     href: "#",
   },
   {
     name: "WholesaleXpress",
-
+    description: "",
     imageSrc: wholesale_logo,
     href: "#",
   },
   {
     name: "OpenLane",
-
+    description: "",
     imageSrc: openlane_log,
     href: "#",
   },
   {
     name: "Adesa Canada",
-
+    description: "",
     imageSrc: promptpanda,
     href: "#",
   },
