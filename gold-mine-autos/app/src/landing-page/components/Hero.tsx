@@ -12,14 +12,6 @@ export default function Hero() {
         <div className="max-w-8xl mx-auto px-6 lg:px-8">
           <div className="lg:mb-18 mx-auto max-w-3xl text-center">
             {/* <h1 className="text-foreground text-5xl font-bold sm:text-6xl">
-              We Find The Cars That Make You{" "}
-              <span className="text-gradient-primary">Money</span>
-            </h1> */}
-            {/* <h1 className="text-foreground text-5xl font-bold sm:text-6xl">
-              We Only Source Cars That Make You{" "}
-              <span className="text-gradient-primary">Money</span>
-            </h1> */}
-            <h1 className="text-foreground text-5xl font-bold sm:text-6xl">
               We Only Source Cars That Make Dealers{" "}
               <span className="text-gradient-primary">Money</span>
             </h1>
@@ -27,6 +19,18 @@ export default function Hero() {
               Browse 500+ pre-vetted, high-margin deals updated daily -
               guaranteed to double your margins and save 12+ hours weekly. Stop
               sorting through junk at auctions.
+            </p> */}
+            <h1 className="text-foreground text-5xl font-bold sm:text-6xl">
+              <span className="text-gradient-primary">
+                High-Margin Cars Only
+              </span>{" "}
+              <br />
+              Handpicked for Your Dealership
+            </h1>
+            <p className="text-muted-foreground mx-auto mt-6 max-w-2xl text-lg leading-8">
+              We work one-on-one to 3x your margins: delivering Canada's best
+              auction inventory with profit reports, priority alerts, and 12+
+              hours saved weekly. <br /> Win the best deals first.
             </p>
 
             <div className="mt-10 flex items-center justify-center gap-x-6">
