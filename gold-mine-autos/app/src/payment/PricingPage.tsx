@@ -63,6 +63,17 @@ export const paymentPlanCards: Record<PaymentPlanId, PaymentPlanCard> = {
       "Priority support",
     ],
   },
+  [PaymentPlanId.Credits10]: {
+    name: "10 Credits",
+    price: "$9",
+    description:
+      "One-time pack of 10 credits for pay-as-you-go access to listings.",
+    features: [
+      "10 one-time credits",
+      "No subscription required",
+      "Use credits to view premium listings",
+    ],
+  },
 };
 
 const PricingPage = () => {
