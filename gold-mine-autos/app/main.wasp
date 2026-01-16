@@ -327,3 +327,32 @@ query getAllListings {
   entities: [Listing]
 }
 //#endregion
+
+//#region Admin Listings
+route AdminListingsRoute { path: "/admin/listings", to: AdminListingsPage }
+page AdminListingsPage {
+  authRequired: true,
+  component: import AdminListings from "@src/admin/dashboards/listings/ListingsDashboardPage"
+}
+
+// Admin operations (for creating/editing/deleting)
+query getAllListingsAdmin {
+  fn: import { getAllListingsAdmin } from "@src/admin/dashboards/listings/operations",
+  entities: [Listing]
+}
+
+action createListing {
+  fn: import { createListing } from "@src/admin/dashboards/listings/operations",
+  entities: [Listing, User]
+}
+
+action updateListing {
+  fn: import { updateListing } from "@src/admin/dashboards/listings/operations",
+  entities: [Listing]
+}
+
+action deleteListing {
+  fn: import { deleteListing } from "@src/admin/dashboards/listings/operations",
+  entities: [Listing]
+}
+//#endregion

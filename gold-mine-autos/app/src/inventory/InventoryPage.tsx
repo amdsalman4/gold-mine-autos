@@ -69,10 +69,10 @@ export default function InventoryPage() {
   });
 
   return (
-    <div className="py-10 lg:mt-10">
+    <div className="py-6 lg:mt-10">
       <div className="mx-auto max-w-7xl px-6 lg:px-8">
         {/* Header */}
-        <div className="mx-auto max-w-4xl text-center mb-8">
+        {/* <div className="mx-auto max-w-4xl text-center mb-8">
           <h1 className="text-foreground mt-2 text-4xl font-bold tracking-tight sm:text-5xl">
             Browse <span className="text-primary">High-ROI</span> Inventory
           </h1>
@@ -80,10 +80,10 @@ export default function InventoryPage() {
             Every vehicle is pre-vetted for profitability. Filter by your budget
             and profit targets.
           </p>
-        </div>
+        </div> */}
 
         {/* Stats Bar (Optional) */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
+        {/* <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
           <div className="bg-white border border-neutral-200 rounded-lg p-4 text-center">
             <p className="text-3xl font-bold text-primary">
               {filteredListings.length}
@@ -116,7 +116,7 @@ export default function InventoryPage() {
             </p>
             <p className="text-sm text-neutral-600">Avg. Max Bid</p>
           </div>
-        </div>
+        </div> */}
 
         {/* Filter Bar */}
         <FilterBar onFilterChange={setFilters} />

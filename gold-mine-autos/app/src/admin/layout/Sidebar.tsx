@@ -13,6 +13,7 @@ import { NavLink, useLocation } from "react-router-dom";
 import Logo from "../../client/static/logo.webp";
 import { cn } from "../../client/utils";
 import SidebarLinkGroup from "./SidebarLinkGroup";
+import { CarIcon } from "lucide-react";
 
 interface SidebarProps {
   sidebarOpen: boolean;
@@ -28,7 +29,7 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }: SidebarProps) => {
 
   const storedSidebarExpanded = localStorage.getItem("sidebar-expanded");
   const [sidebarExpanded, setSidebarExpanded] = useState(
-    storedSidebarExpanded === null ? false : storedSidebarExpanded === "true",
+    storedSidebarExpanded === null ? false : storedSidebarExpanded === "true"
   );
 
   // close on click outside
@@ -74,7 +75,7 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }: SidebarProps) => {
         {
           "translate-x-0": sidebarOpen,
           "-translate-x-full": !sidebarOpen,
-        },
+        }
       )}
     >
       {/* <!-- SIDEBAR HEADER --> */}
@@ -114,7 +115,7 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }: SidebarProps) => {
                     "text-muted-foreground hover:bg-accent hover:text-accent-foreground group relative flex items-center gap-2.5 rounded-sm px-4 py-2 font-medium duration-300 ease-in-out",
                     {
                       "bg-accent text-accent-foreground": isActive,
-                    },
+                    }
                   )
                 }
               >
@@ -134,7 +135,7 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }: SidebarProps) => {
                       "text-muted-foreground hover:bg-accent hover:text-accent-foreground group relative flex items-center gap-2.5 rounded-sm px-4 py-2 font-medium duration-300 ease-in-out",
                       {
                         "bg-accent text-accent-foreground": isActive,
-                      },
+                      }
                     )
                   }
                 >
@@ -143,6 +144,24 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }: SidebarProps) => {
                 </NavLink>
               </li>
               {/* <!-- Menu Item Users --> */}
+              {/* Menu Item Listings */}
+              <li>
+                <NavLink
+                  to="/admin/listings"
+                  end
+                  className={({ isActive }) =>
+                    cn(
+                      "text-muted-foreground hover:bg-accent hover:text-accent-foreground group relative flex items-center gap-2.5 rounded-sm px-4 py-2 font-medium duration-300 ease-in-out",
+                      {
+                        "bg-accent text-accent-foreground": isActive,
+                      }
+                    )
+                  }
+                >
+                  <CarIcon /> {/* Import from lucide-react */}
+                  Listings
+                </NavLink>
+              </li>
 
               {/* <!-- Menu Item Settings --> */}
               <li>
@@ -154,7 +173,7 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }: SidebarProps) => {
                       "text-muted-foreground hover:bg-accent hover:text-accent-foreground group relative flex items-center gap-2.5 rounded-sm px-4 py-2 font-medium duration-300 ease-in-out",
                       {
                         "bg-accent text-accent-foreground": isActive,
-                      },
+                      }
                     )
                   }
                 >
@@ -183,7 +202,7 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }: SidebarProps) => {
                       "text-muted-foreground hover:bg-accent hover:text-accent-foreground group relative flex items-center gap-2.5 rounded-sm px-4 py-2 font-medium duration-300 ease-in-out",
                       {
                         "bg-accent text-accent-foreground": isActive,
-                      },
+                      }
                     )
                   }
                 >
@@ -207,7 +226,7 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }: SidebarProps) => {
                           {
                             "bg-accent text-accent-foreground":
                               pathname.includes("ui"),
-                          },
+                          }
                         )}
                         onClick={(e) => {
                           e.preventDefault();
@@ -234,7 +253,7 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }: SidebarProps) => {
                               className={({ isActive }) =>
                                 cn(
                                   "text-muted-foreground hover:text-accent group relative flex items-center gap-2.5 rounded-md px-4 font-medium duration-300 ease-in-out",
-                                  { "!text-accent": isActive },
+                                  { "!text-accent": isActive }
                                 )
                               }
                             >
