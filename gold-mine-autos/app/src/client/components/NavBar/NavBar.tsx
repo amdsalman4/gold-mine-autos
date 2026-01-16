@@ -14,8 +14,8 @@ import { throttleWithTrailingInvocation } from "../../../shared/utils";
 import { UserDropdown } from "../../../user/UserDropdown";
 import { UserMenuItems } from "../../../user/UserMenuItems";
 import { useIsLandingPage } from "../../hooks/useIsLandingPage";
-// import logo from "../../static/logo.webp"
 import logo from "../../../../public/gma_logo.png";
+import main_logo from "../../../../public/gma_logo_white.png";
 import { cn } from "../../utils";
 import DarkModeSwitcher from "../DarkModeSwitcher";
 import { Announcement } from "./Announcement";
@@ -244,13 +244,37 @@ function renderNavigationItems(
     );
   });
 }
-const NavLogo = ({ isScrolled }: { isScrolled: boolean }) => (
-  <img
-    className={cn("transition-all duration-500 rounded-full", {
-      "size-18": !isScrolled,
-      "size-17": isScrolled,
-    })}
-    src={logo}
-    alt="GoldMine Autos"
-  />
-);
+
+const NavLogo = ({ isScrolled }: { isScrolled: boolean }) => {
+  const [theme, setTheme] = useState<string | null>(null);
+
+  useEffect(() => {
+    // Get initial theme
+    const isDark = document.documentElement.classList.contains("dark");
+    setTheme(isDark ? "dark" : "light");
+
+    // Watch for theme changes
+    const observer = new MutationObserver(() => {
+      const isDark = document.documentElement.classList.contains("dark");
+      setTheme(isDark ? "dark" : "light");
+    });
+
+    observer.observe(document.documentElement, {
+      attributes: true,
+      attributeFilter: ["class"],
+    });
+
+    return () => observer.disconnect();
+  }, []);
+
+  return (
+    <img
+      className={cn("transition-all duration-500 rounded-full", {
+        "size-18": !isScrolled,
+        "size-17": isScrolled,
+      })}
+      src={theme === "light" ? main_logo : logo}
+      alt="GoldMine Autos"
+    />
+  );
+};
