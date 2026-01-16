@@ -39,6 +39,8 @@ export type Listing = {
   repairs: any; // JSON type
 
   status: string;
+  imageUrls: string[];
+  primaryImage: string | null;
 };
 
 export type RepairItem = {

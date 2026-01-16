@@ -94,7 +94,10 @@ const AddListingForm = ({ onClose }: AddListingFormProps) => {
         extraCosts: parseFloat(listingData.extraCosts || 0),
         repairs: listingData.repairs || null,
         status: listingData.status || "active",
-      });
+        imageUrls: listingData.imageUrls || [],
+        primaryImage:
+          listingData.primaryImage || listingData.imageUrls?.[0] || undefined,
+      } as any);
 
       alert("Listing created successfully from JSON!");
       onClose();
@@ -161,7 +164,9 @@ const AddListingForm = ({ onClose }: AddListingFormProps) => {
         extraCosts,
         repairs: null,
         status: "active",
-      });
+        imageUrls: [],
+        primaryImage: undefined,
+      } as any);
 
       alert("Listing created successfully!");
       onClose();
@@ -217,6 +222,8 @@ const AddListingForm = ({ onClose }: AddListingFormProps) => {
         },
       ],
     },
+    imageUrls: ["https://example.com/car1.jpg", "https://example.com/car2.jpg"],
+    primaryImage: "https://example.com/car1.jpg",
     status: "active",
   };
 

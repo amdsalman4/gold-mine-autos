@@ -131,6 +131,10 @@ model Listing {
   auctionDate               DateTime
   currentHighBid            Float?
   currentHighBidder         String?         // e.g., "Bidder #1234" or null if no bids
+
+// Images
+  imageUrls                 String[]        @default([])
+  primaryImage              String?
   
   // Damage Assessment
   damageEstimate            Float           // Dollar amount for repair costs

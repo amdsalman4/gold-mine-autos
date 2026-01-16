@@ -61,6 +61,17 @@ export function Listing({ listing }: { listing: ListingType }) {
       <div className="flex flex-col lg:flex-row items-stretch justify-between w-full gap-4 p-4">
         {/* Column 1: Vehicle Info */}
         <div className="flex flex-col gap-2 flex-1 min-w-0">
+          {listing.primaryImage && (
+            <img
+              src={listing.primaryImage}
+              alt={`${listing.year} ${listing.make} ${listing.model}`}
+              className="w-full max-w-[200px] rounded-md object-cover"
+              onError={(e) => {
+                // Fallback if image fails to load
+                e.currentTarget.style.display = "none";
+              }}
+            />
+          )}
           <a
             href={listing.auctionLink}
             target="_blank"

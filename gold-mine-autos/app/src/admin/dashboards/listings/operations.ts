@@ -33,6 +33,8 @@ const createListingSchema = z.object({
   extraCosts: z.number().default(0),
   repairs: z.any().optional(), // JSON
   status: z.string().default("active"),
+  imageUrls: z.array(z.string()).default([]),
+  primaryImage: z.string().optional(),
 });
 
 type CreateListingInput = z.infer<typeof createListingSchema>;
