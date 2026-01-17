@@ -97,7 +97,7 @@ export function Listing({ listing }: { listing: ListingType }) {
       <div className="flex items-center justify-between px-4 pt-4 pb-2">
         {/* Left: Estimated Costs Tag */}
         <div className="flex items-center gap-2">
-          <span className="bg-red-100 text-red-700 px-3 py-1.5 rounded-full text-xs font-semibold border border-red-200">
+          <span className="px-3 py-1.5 rounded-full text-xs font-semibold border">
             Est. Costs: {formatCurrency(totalEstimatedCosts)}
           </span>
         </div>
@@ -361,130 +361,266 @@ export function Listing({ listing }: { listing: ListingType }) {
 
       {/* Expandable Details Section */}
       {showDetails && (
-        <div className="border-t border-neutral-200 bg-neutral-50 px-6 py-4">
-          <h3 className="font-semibold text-base mb-4 text-neutral-900">
+        <div className="border-t border-neutral-200 bg-white px-6 py-6">
+          <h3 className="text-lg mb-6 text-neutral-900">
             Detailed Financial Breakdown
           </h3>
 
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-            {/* Column 1: Bidding Strategy */}
-            <div className="bg-white rounded-lg border border-neutral-200 p-4">
-              <h4 className="font-semibold text-sm text-neutral-700 mb-3 border-b pb-2">
-                Bidding Strategy
-              </h4>
-              <div className="space-y-2 text-sm">
-                <div className="flex justify-between">
-                  <span className="text-neutral-600">Market Value:</span>
-                  <span className="font-semibold">
-                    {formatCurrency(listing.estimatedMarketValue)}
-                  </span>
-                </div>
-                <div className="flex justify-between">
-                  <span className="text-blue-600">Recommended Max:</span>
-                  <span className="font-semibold text-blue-600">
-                    {formatCurrency(listing.recommendedMaxBid)}
-                  </span>
-                </div>
-                <div className="flex justify-between">
-                  <span className="text-orange-600">Absolute Max:</span>
-                  <span className="font-semibold text-orange-600">
-                    {formatCurrency(listing.absoluteMaxBid)}
-                  </span>
-                </div>
-                <div className="flex justify-between pt-2 border-t">
-                  <span className="text-neutral-600">Total Investment:</span>
-                  <span className="font-semibold">
-                    {formatCurrency(listing.estimatedTotalInvestment)}
-                  </span>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+            {/* Left Column: Our Analysis & Notes */}
+            <div className="space-y-4">
+              <div>
+                <h4 className="text-sm text-neutral-900 mb-2">Our Analysis</h4>
+                <p className="text-sm text-neutral-700 leading-relaxed">
+                  {/* This will come from schema later - using dummy text for now */}
+                  This vehicle represents a strong opportunity based on current
+                  market conditions. The estimated market value is derived from
+                  recent comparable sales in the GTA area. We recommend staying
+                  conservative with your bid to maintain a healthy profit margin
+                  after accounting for all reconditioning costs.
+                </p>
+              </div>
+
+              <div className="pt-4 border-t border-neutral-200">
+                <h4 className="text-sm text-neutral-900 mb-3">
+                  Bidding Strategy
+                </h4>
+                <div className="space-y-2 text-sm">
+                  <div className="flex justify-between">
+                    <span className="text-neutral-700">Market Value:</span>
+                    <span className="text-neutral-900">
+                      {formatCurrency(listing.estimatedMarketValue)}
+                    </span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span className="text-neutral-700">
+                      Recommended Max Bid:
+                    </span>
+                    <span className="text-neutral-900">
+                      {formatCurrency(listing.recommendedMaxBid)}
+                    </span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span className="text-neutral-700">Absolute Max Bid:</span>
+                    <span className="text-neutral-900">
+                      {formatCurrency(listing.absoluteMaxBid)}
+                    </span>
+                  </div>
                 </div>
               </div>
-            </div>
 
-            {/* Column 2: Cost Breakdown */}
-            <div className="bg-white rounded-lg border border-neutral-200 p-4">
-              <h4 className="font-semibold text-sm text-neutral-700 mb-3 border-b pb-2">
-                Cost Breakdown
-              </h4>
-              <div className="space-y-2 text-sm">
-                <div className="flex justify-between">
-                  <span className="text-neutral-600">Towing:</span>
-                  <span>{formatCurrency(listing.towingCost)}</span>
+              {/* Reference Links */}
+              {listing.carGurusLink && (
+                <div className="pt-4 border-t border-neutral-200">
+                  <a
+                    href={listing.carGurusLink}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="text-sm text-neutral-900 underline flex items-center gap-1 hover:text-neutral-600"
+                    onClick={(e) => e.stopPropagation()}
+                  >
+                    View Market Value Research{" "}
+                    <ExternalLink className="w-3 h-3" />
+                  </a>
                 </div>
-                <div className="flex justify-between">
-                  <span className="text-neutral-600">Detailing:</span>
-                  <span>{formatCurrency(listing.detailingCost)}</span>
-                </div>
-                <div className="flex justify-between">
-                  <span className="text-neutral-600">Repairs:</span>
-                  <span>{formatCurrency(totalRepairCost)}</span>
-                </div>
-                <div className="flex justify-between">
-                  <span className="text-neutral-600">Damage Estimate:</span>
-                  <span>{formatCurrency(listing.damageEstimate)}</span>
-                </div>
-                <div className="flex justify-between">
-                  <span className="text-neutral-600">Extra Costs:</span>
-                  <span>{formatCurrency(listing.extraCosts)}</span>
-                </div>
-                <div className="flex justify-between pt-2 border-t font-semibold">
-                  <span>Total Costs:</span>
-                  <span>{formatCurrency(totalEstimatedCosts)}</span>
-                </div>
-              </div>
-            </div>
-
-            {/* Column 3: Repair Details */}
-            <div className="bg-white rounded-lg border border-neutral-200 p-4">
-              <h4 className="font-semibold text-sm text-neutral-700 mb-3 border-b pb-2">
-                Repair Details
-              </h4>
-              {repairs.length > 0 ? (
-                <div className="space-y-3">
-                  {repairs.map((repair, idx) => (
-                    <div
-                      key={idx}
-                      className="text-sm border-l-2 border-blue-300 pl-3"
-                    >
-                      <p className="font-medium text-neutral-900">
-                        {repair.description}
-                      </p>
-                      <div className="text-xs text-neutral-600 mt-1 space-y-0.5">
-                        <div>Parts: {formatCurrency(repair.partsCost)}</div>
-                        <div>Labour: {formatCurrency(repair.labour)}</div>
-                        {repair.partsLink && (
-                          <a
-                            href={repair.partsLink}
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            className="text-primary hover:underline flex items-center gap-1"
-                          >
-                            Parts Link <ExternalLink className="w-3 h-3" />
-                          </a>
-                        )}
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              ) : (
-                <p className="text-sm text-neutral-500">No repairs needed</p>
               )}
             </div>
-          </div>
 
-          {/* Reference Links */}
-          {listing.carGurusLink && (
-            <div className="mt-4 pt-4 border-t">
-              <a
-                href={listing.carGurusLink}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="text-sm text-primary hover:underline flex items-center gap-1"
-              >
-                View Market Value Research (CarGurus){" "}
-                <ExternalLink className="w-3 h-3" />
-              </a>
+            {/* Right Column: Editable Cost Breakdown */}
+            <div className="space-y-4">
+              <h4 className="text-sm text-neutral-900 mb-3">
+                Cost Breakdown (Editable)
+              </h4>
+
+              <div className="space-y-4">
+                {/* Towing Cost */}
+                <div className="pb-3 border-b border-neutral-200">
+                  <div className="flex justify-between items-start mb-1">
+                    <div className="flex-1">
+                      <p className="text-sm text-neutral-900">Towing</p>
+                      <p className="text-xs text-neutral-600 mt-0.5">
+                        Transport from auction to your lot
+                      </p>
+                    </div>
+                    <div className="flex items-center gap-1">
+                      <span className="text-sm text-neutral-600">$</span>
+                      <input
+                        type="number"
+                        defaultValue={listing.towingCost}
+                        onChange={(e) => {
+                          // Will add state management here
+                        }}
+                        onClick={(e) => e.stopPropagation()}
+                        className="w-20 px-2 py-1 border border-neutral-300 rounded text-right text-sm focus:outline-none focus:ring-1 focus:ring-neutral-400"
+                      />
+                    </div>
+                  </div>
+                </div>
+
+                {/* Detailing Cost */}
+                <div className="pb-3 border-b border-neutral-200">
+                  <div className="flex justify-between items-start mb-1">
+                    <div className="flex-1">
+                      <p className="text-sm text-neutral-900">Detailing</p>
+                      <p className="text-xs text-neutral-600 mt-0.5">
+                        Interior and exterior cleaning, minor touch-ups
+                      </p>
+                    </div>
+                    <div className="flex items-center gap-1">
+                      <span className="text-sm text-neutral-600">$</span>
+                      <input
+                        type="number"
+                        defaultValue={listing.detailingCost}
+                        onClick={(e) => e.stopPropagation()}
+                        className="w-20 px-2 py-1 border border-neutral-300 rounded text-right text-sm focus:outline-none focus:ring-1 focus:ring-neutral-400"
+                      />
+                    </div>
+                  </div>
+                </div>
+
+                {/* Repair Costs */}
+                {repairs.length > 0 ? (
+                  repairs.map((repair, idx) => (
+                    <div key={idx} className="pb-3 border-b border-neutral-200">
+                      <div className="flex justify-between items-start mb-2">
+                        <div className="flex-1">
+                          {repair.partsLink && (
+                            <a
+                              href={repair.partsLink}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              className="text-xs text-neutral-600 underline mt-0.5 inline-flex items-center gap-1"
+                              onClick={(e) => e.stopPropagation()}
+                            >
+                              Parts source <ExternalLink className="w-2 h-2" />
+                            </a>
+                          )}
+                          )
+                        </div>
+                      </div>
+                      <div className="space-y-1">
+                        <div className="flex justify-between items-center">
+                          <span className="text-xs text-neutral-600">
+                            Parts cost
+                          </span>
+                          <div className="flex items-center gap-1">
+                            <span className="text-xs text-neutral-600">$</span>
+                            <input
+                              type="number"
+                              defaultValue={repair.partsCost}
+                              onClick={(e) => e.stopPropagation()}
+                              className="w-20 px-2 py-1 border border-neutral-300 rounded text-right text-xs focus:outline-none focus:ring-1 focus:ring-neutral-400"
+                            />
+                          </div>
+                        </div>
+                        <div className="flex justify-between items-center">
+                          <span className="text-xs text-neutral-600">
+                            Labour cost
+                          </span>
+                          <div className="flex items-center gap-1">
+                            <span className="text-xs text-neutral-600">$</span>
+                            <input
+                              type="number"
+                              defaultValue={repair.labour}
+                              onClick={(e) => e.stopPropagation()}
+                              className="w-20 px-2 py-1 border border-neutral-300 rounded text-right text-xs focus:outline-none focus:ring-1 focus:ring-neutral-400"
+                            />
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  ))
+                ) : (
+                  <div className="pb-3 border-b border-neutral-200">
+                    <p className="text-sm text-neutral-900">Repairs</p>
+                    <p className="text-xs text-neutral-600 mt-0.5">
+                      No repairs needed
+                    </p>
+                  </div>
+                )}
+
+                {/* Damage Estimate */}
+                <div className="pb-3 border-b border-neutral-200">
+                  <div className="flex justify-between items-start mb-1">
+                    <div className="flex-1">
+                      <p className="text-sm text-neutral-900">
+                        Additional Damage Estimate
+                      </p>
+                      <p className="text-xs text-neutral-600 mt-0.5">
+                        Unforeseen repairs or hidden damage buffer
+                      </p>
+                    </div>
+                    <div className="flex items-center gap-1">
+                      <span className="text-sm text-neutral-600">$</span>
+                      <input
+                        type="number"
+                        defaultValue={listing.damageEstimate}
+                        onClick={(e) => e.stopPropagation()}
+                        className="w-20 px-2 py-1 border border-neutral-300 rounded text-right text-sm focus:outline-none focus:ring-1 focus:ring-neutral-400"
+                      />
+                    </div>
+                  </div>
+                </div>
+
+                {/* Extra Costs */}
+                <div className="pb-3 border-b border-neutral-200">
+                  <div className="flex justify-between items-start mb-1">
+                    <div className="flex-1">
+                      <p className="text-sm text-neutral-900">Extra Costs</p>
+                      <p className="text-xs text-neutral-600 mt-0.5">
+                        Safety certification, admin fees, storage
+                      </p>
+                    </div>
+                    <div className="flex items-center gap-1">
+                      <span className="text-sm text-neutral-600">$</span>
+                      <input
+                        type="number"
+                        defaultValue={listing.extraCosts}
+                        onClick={(e) => e.stopPropagation()}
+                        className="w-20 px-2 py-1 border border-neutral-300 rounded text-right text-sm focus:outline-none focus:ring-1 focus:ring-neutral-400"
+                      />
+                    </div>
+                  </div>
+                </div>
+
+                {/* Total Costs - Calculated */}
+                <div className="pt-3">
+                  <div className="flex justify-between items-center">
+                    <span className="text-sm text-neutral-900">
+                      Total Estimated Costs:
+                    </span>
+                    <span className="text-base text-neutral-900">
+                      {formatCurrency(totalEstimatedCosts)}
+                    </span>
+                  </div>
+                </div>
+
+                {/* Total Investment */}
+                <div className="pt-2 border-t border-neutral-300">
+                  <div className="flex justify-between items-center">
+                    <span className="text-sm text-neutral-900">
+                      Total Investment (Bid + Costs):
+                    </span>
+                    <span className="text-base text-neutral-900">
+                      {formatCurrency(bidAmount + totalEstimatedCosts)}
+                    </span>
+                  </div>
+                </div>
+
+                {/* Final Profit */}
+                <div className="pt-2 border-t-2 border-neutral-900">
+                  <div className="flex justify-between items-center">
+                    <span className="text-sm text-neutral-900">
+                      Expected Profit:
+                    </span>
+                    <span className="text-lg text-neutral-900">
+                      {formatCurrency(calculatedProfit)}
+                    </span>
+                  </div>
+                </div>
+              </div>
             </div>
-          )}
+          </div>
         </div>
       )}
     </div>
