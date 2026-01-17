@@ -2,13 +2,13 @@
 
 import { useState } from "react";
 import { ChevronDown, ChevronUp, ExternalLink, Clock } from "lucide-react";
-import { Card } from "../../client/components/ui/card";
 import { Button } from "../../client/components/ui/button";
 import { cn } from "../../client/utils";
 import type { Listing as ListingType, RepairItem } from "../types";
 
 export function Listing({ listing }: { listing: ListingType }) {
   const [showDetails, setShowDetails] = useState(false);
+  const [bidAmount, setBidAmount] = useState(listing.recommendedMaxBid); // Add this state
 
   // Format currency
   const formatCurrency = (amount: number) => {
@@ -21,7 +21,7 @@ export function Listing({ listing }: { listing: ListingType }) {
 
   // Format kilometers
   const formatKm = (km: number) => {
-    return new Intl.NumberFormat("en-CA").format(km) + " km";
+    return new Intl.NumberFormat("en-CA").format(km) + " Km";
   };
 
   // Calculate time until auction
@@ -71,8 +71,28 @@ export function Listing({ listing }: { listing: ListingType }) {
     listing.extraCosts +
     totalRepairCost;
 
+  // Handle click on listing (except for buttons/links)
+  const handleListingClick = (e: React.MouseEvent) => {
+    // Don't navigate if clicking on a button, link, or interactive element
+    const target = e.target as HTMLElement;
+    if (
+      target.tagName === "BUTTON" ||
+      target.tagName === "A" ||
+      target.closest("button") ||
+      target.closest("a")
+    ) {
+      return;
+    }
+    window.open(listing.auctionLink, "_blank");
+  };
+  //Profit Caluclation
+  const calculatedProfit =
+    listing.estimatedMarketValue - bidAmount - totalEstimatedCosts;
   return (
-    <div className="w-full border-b border-neutral-200 hover:bg-neutral-50/50 transition-all">
+    <div
+      className="w-full border-b border-neutral-200 hover:bg-neutral-50/50 transition-all cursor-pointer"
+      onClick={handleListingClick}
+    >
       {/* Top Row: Tags */}
       <div className="flex items-center justify-between px-4 pt-4 pb-2">
         {/* Left: Estimated Costs Tag */}
@@ -137,44 +157,48 @@ export function Listing({ listing }: { listing: ListingType }) {
           )}
         </div>
 
-        {/* Column 2: Vehicle Title & Basic Info (col-span-5) */}
-        <div className="col-span-5 flex flex-col gap-2">
+        {/* Column 2: Vehicle Info (col-span-3) */}
+        <div className="col-span-3 flex flex-col gap-1">
+          {/* Title - Make Model Trim */}
           <a
             href={listing.auctionLink}
             target="_blank"
             rel="noopener noreferrer"
-            className="font-bold text-lg text-neutral-900 hover:text-primary uppercase"
+            className="font-bold text-base text-neutral-900 hover:text-primary uppercase"
           >
-            {listing.year} {listing.make} {listing.model}
+            {listing.year} {listing.make} {listing.model} {listing.trim || ""}
           </a>
 
-          {/* VIN, Stock, Damage */}
-          <div className="space-y-1 text-sm">
-            <div>
-              <span className="text-neutral-600">VIN #: </span>
-              <span className="font-medium">{listing.vin || "N/A"}</span>
-            </div>
-            {listing.trim && (
-              <div>
-                <span className="text-neutral-600">Trim: </span>
-                <span className="font-medium">{listing.trim}</span>
-              </div>
-            )}
-            <div>
-              <span className="text-neutral-600">Damage Estimate: </span>
-              <span className="font-medium">
-                {formatCurrency(listing.damageEstimate)}
-              </span>
-            </div>
+          {/* VIN */}
+          <div className="text-sm">
+            <span className="text-neutral-600">VIN #: </span>
+            <span>{listing.vin || "N/A"}</span>
+          </div>
+
+          {/* Stock Number (using listing ID) */}
+          <div className="text-sm">
+            <span className="text-neutral-600">Stock #: </span>
+            <span>{listing.id.slice(0, 8)}</span>
+          </div>
+
+          {/* Damage Area - Dummy for now */}
+          <div className="text-sm">
+            <span>Front End</span>
+          </div>
+
+          {/* Damage Estimate */}
+          <div className="text-sm">
+            <span className="text-neutral-600">Damage Estimate: </span>
+            <span>{formatCurrency(listing.damageEstimate)}</span>
           </div>
 
           {/* Main selling points */}
           {listing.mainPoints.length > 0 && (
-            <div className="flex flex-wrap gap-1 mt-1">
-              {listing.mainPoints.slice(0, 4).map((point, idx) => (
+            <div className="flex flex-wrap gap-1 mt-2">
+              {listing.mainPoints.slice(0, 3).map((point, idx) => (
                 <span
                   key={idx}
-                  className="text-xs  px-2 py-0.5 rounded border "
+                  className="text-xs px-2 py-0.5 rounded border border-neutral-300 bg-neutral-50"
                 >
                   {point}
                 </span>
@@ -184,51 +208,131 @@ export function Listing({ listing }: { listing: ListingType }) {
         </div>
 
         {/* Column 3: Specs (col-span-2) */}
-        <div className="col-span-2 flex flex-col gap-2 text-sm">
+        <div className="col-span-2 flex flex-col gap-1 text-sm">
+          {/* Kilometers */}
+          {/* Kilometers */}
           <div>
-            <span className="font-medium">{formatKm(listing.kilometers)}</span>
+            <span>{formatKm(listing.kilometers)}</span>
           </div>
+
+          {/* Transmission */}
           <div>
             <span className="text-neutral-600">Transmission: </span>
             <span>Auto</span>
           </div>
-          {listing.currentHighBidder ? (
-            <div>
-              <span className="text-neutral-600">Current Bid: </span>
-              <span className="font-semibold">
-                {formatCurrency(listing.currentHighBid || 0)}
-              </span>
-            </div>
-          ) : (
-            <span className="text-green-600 font-medium">No bids yet</span>
-          )}
+
+          {/* Status - Dummy for now */}
+          <div>
+            <span className="text-green-600">Starts</span>
+          </div>
+
+          {/* Engine - Dummy for now */}
+          <div>
+            <span className="text-neutral-600">Engine: </span>
+            <span>2.0L I4</span>
+          </div>
         </div>
 
-        {/* Column 4: Auction Details & Profit (col-span-3) */}
+        {/* Column 4: Location & Title Info (col-span-2) */}
+        <div className="col-span-2 flex flex-col gap-1 text-sm">
+          {/* Location - Dummy for now */}
+          <div>
+            <a href="#" className="text-primary hover:underline">
+              Toronto (Oshawa)
+            </a>
+          </div>
+
+          {/* Lane/Run - Dummy */}
+          <div>
+            <span>Lane: 3 Run: 45</span>
+          </div>
+
+          {/* Location Name */}
+          <div>
+            <span className="text-neutral-600">Location: </span>
+            <span>IAA Toronto</span>
+          </div>
+
+          {/* Title Brand - Dummy for now */}
+          <div>
+            <span>ON-NOT BRANDED</span>
+          </div>
+        </div>
+
+        {/* Column 5: Auction Details & Profit (col-span-3) */}
         <div className="col-span-3 flex flex-col gap-2">
           {/* Auction Date/Time */}
           <div className="text-sm">
             <div className="font-semibold text-neutral-900">
               {formatAuctionDate()}
             </div>
-            {/* <div className="text-neutral-600 text-xs mt-1">
-              Status:{" "}
-              <span className="text-green-600 font-semibold uppercase">
-                Active
-              </span>
-            </div> */}
           </div>
 
-          {/* Profit Badge */}
-          <div className="border border-grey-200 rounded-lg p-3 mt-2">
-            <div className="text-xs text-neutral-600 mb-1">
-              Estimated Profit
+          {/* Current Bid or Status */}
+          {listing.currentHighBidder ? (
+            <div className="text-sm">
+              <span className="text-neutral-600">Current Bid: </span>
+              <span className="font-semibold">
+                {formatCurrency(listing.currentHighBid || 0)}
+              </span>
+              <div className="text-xs text-neutral-500">
+                {listing.currentHighBidder}
+              </div>
             </div>
-            {/* <div className="text-2xl font-bold text-green-700">
-              {formatCurrency(listing.profitMargin)}
-            </div> */}
-            <div className="text-xs text-neutral-500 mt-1">
-              Max Bid: {formatCurrency(listing.recommendedMaxBid)}
+          ) : (
+            <div className="text-sm">
+              <span className="text-green-600 font-semibold">No bids yet</span>
+            </div>
+          )}
+
+          {/* Profit Calculator Badge */}
+          <div className="border border-neutral-200 rounded-lg p-3 mt-auto">
+            <div className="space-y-2 text-sm">
+              {/* Market Value */}
+              <div className="flex justify-between items-center">
+                <span className="text-neutral-600">Market Value:</span>
+
+                {formatCurrency(listing.estimatedMarketValue)}
+              </div>
+
+              {/* Bid Input */}
+              <div className="flex justify-between items-center">
+                <span className="text-neutral-600">If place bid:</span>
+                <div className="flex items-center gap-1">
+                  <span className="text-neutral-600">$</span>
+                  <input
+                    type="number"
+                    value={bidAmount}
+                    onChange={(e) =>
+                      setBidAmount(parseFloat(e.target.value) || 0)
+                    }
+                    onClick={(e) => e.stopPropagation()}
+                    className="w-24 px-2 py-1 border border-neutral-300 rounded text-right focus:outline-none focus:ring-2 focus:ring-primary"
+                  />
+                </div>
+              </div>
+
+              {/* Estimated Costs */}
+              <div className="flex justify-between items-center text-xs">
+                <span className="text-neutral-600">Minus est. costs:</span>
+
+                {formatCurrency(totalEstimatedCosts)}
+              </div>
+
+              <hr className="border-neutral-300" />
+
+              {/* Profit Result */}
+              <div className="flex justify-between items-center">
+                <span className="text-neutral-600">Estimated Profit:</span>
+                <span
+                  className={cn("font-bold text-lg", {
+                    "text-green-700": calculatedProfit > 0,
+                    "text-red-700": calculatedProfit <= 0,
+                  })}
+                >
+                  {formatCurrency(calculatedProfit)}
+                </span>
+              </div>
             </div>
           </div>
 
@@ -236,8 +340,11 @@ export function Listing({ listing }: { listing: ListingType }) {
           <Button
             variant="outline"
             size="sm"
-            onClick={() => setShowDetails(!showDetails)}
-            className="w-full mt-auto"
+            onClick={(e) => {
+              e.stopPropagation();
+              setShowDetails(!showDetails);
+            }}
+            className="w-full"
           >
             {showDetails ? (
               <>
