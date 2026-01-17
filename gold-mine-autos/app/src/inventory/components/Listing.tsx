@@ -1,14 +1,36 @@
 // inventory/components/Listing.tsx
 
 import { useState } from "react";
-import { ChevronDown, ChevronUp, ExternalLink, Clock } from "lucide-react";
+import {
+  ChevronDown,
+  ChevronUp,
+  ExternalLink,
+  Clock,
+  Plus,
+  X,
+} from "lucide-react";
 import { Button } from "../../client/components/ui/button";
 import { cn } from "../../client/utils";
 import type { Listing as ListingType, RepairItem } from "../types";
 
 export function Listing({ listing }: { listing: ListingType }) {
   const [showDetails, setShowDetails] = useState(false);
-  const [bidAmount, setBidAmount] = useState(listing.recommendedMaxBid); // Add this state
+  const [bidAmount, setBidAmount] = useState(listing.recommendedMaxBid);
+
+  // Editable costs state
+  const [auctionOverhead, setAuctionOverhead] = useState(500); // Default overhead
+  const [towingCost, setTowingCost] = useState(listing.towingCost);
+  const [detailingCost, setDetailingCost] = useState(listing.detailingCost);
+  const [bufferCosts, setBufferCosts] = useState(listing.extraCosts);
+  const [repairItems, setRepairItems] = useState<
+    Array<{ description: string; parts: number; labour: number }>
+  >(
+    (listing.repairs?.items || []).map((r: RepairItem) => ({
+      description: r.description,
+      parts: r.partsCost,
+      labour: r.labour,
+    }))
+  );
 
   // Format currency
   const formatCurrency = (amount: number) => {
@@ -73,21 +95,54 @@ export function Listing({ listing }: { listing: ListingType }) {
 
   // Handle click on listing (except for buttons/links)
   const handleListingClick = (e: React.MouseEvent) => {
-    // Don't navigate if clicking on a button, link, or interactive element
     const target = e.target as HTMLElement;
     if (
       target.tagName === "BUTTON" ||
       target.tagName === "A" ||
+      target.tagName === "INPUT" ||
       target.closest("button") ||
-      target.closest("a")
+      target.closest("a") ||
+      target.closest("input")
     ) {
       return;
     }
     window.open(listing.auctionLink, "_blank");
   };
-  //Profit Caluclation
-  const calculatedProfit =
-    listing.estimatedMarketValue - bidAmount - totalEstimatedCosts;
+
+  // Calculations for breakdown
+  const costToDoor = bidAmount + auctionOverhead + towingCost;
+  const totalRepairItemsCost = repairItems.reduce(
+    (sum, item) => sum + item.parts + item.labour,
+    0
+  );
+  const readyToSellTotal =
+    costToDoor + totalRepairItemsCost + detailingCost + bufferCosts;
+  const calculatedProfit = listing.estimatedMarketValue - readyToSellTotal;
+
+  // Add new repair item
+  const addRepairItem = () => {
+    setRepairItems([
+      ...repairItems,
+      { description: "New repair", parts: 0, labour: 0 },
+    ]);
+  };
+
+  // Remove repair item
+  const removeRepairItem = (index: number) => {
+    setRepairItems(repairItems.filter((_, i) => i !== index));
+  };
+
+  // Update repair item
+  const updateRepairItem = (
+    index: number,
+    field: "description" | "parts" | "labour",
+    value: string | number
+  ) => {
+    const updated = [...repairItems];
+    updated[index] = { ...updated[index], [field]: value };
+    setRepairItems(updated);
+  };
+
   return (
     <div
       className="w-full border-b border-neutral-200 hover:bg-neutral-50/50 transition-all cursor-pointer"
@@ -113,7 +168,7 @@ export function Listing({ listing }: { listing: ListingType }) {
             href={listing.carGurusLink || "#"}
             target="_blank"
             rel="noopener noreferrer"
-            className="bg-green-100 text-green-700 px-3 py-1.5 rounded-full text-m font-semibold border border-green-200 hover:bg-green-200 transition-colors flex items-center gap-1"
+            className="bg-green-100 text-green-700 px-3 py-1.5 rounded-full text-sm font-semibold border border-green-200 hover:bg-green-200 transition-colors flex items-center gap-1"
             onClick={(e) => {
               if (!listing.carGurusLink) {
                 e.preventDefault();
@@ -209,8 +264,6 @@ export function Listing({ listing }: { listing: ListingType }) {
 
         {/* Column 3: Specs (col-span-2) */}
         <div className="col-span-2 flex flex-col gap-1 text-sm">
-          {/* Kilometers */}
-          {/* Kilometers */}
           <div>
             <span>{formatKm(listing.kilometers)}</span>
           </div>
@@ -291,7 +344,6 @@ export function Listing({ listing }: { listing: ListingType }) {
               {/* Market Value */}
               <div className="flex justify-between items-center">
                 <span className="text-neutral-600">Market Value:</span>
-
                 {formatCurrency(listing.estimatedMarketValue)}
               </div>
 
@@ -315,7 +367,6 @@ export function Listing({ listing }: { listing: ListingType }) {
               {/* Estimated Costs */}
               <div className="flex justify-between items-center text-xs">
                 <span className="text-neutral-600">Minus est. costs:</span>
-
                 {formatCurrency(totalEstimatedCosts)}
               </div>
 
@@ -359,267 +410,236 @@ export function Listing({ listing }: { listing: ListingType }) {
         </div>
       </div>
 
-      {/* Expandable Details Section */}
+      {/* Expandable Details Section - COMPLETELY REDESIGNED */}
       {showDetails && (
         <div className="border-t border-neutral-200 bg-white px-6 py-6">
-          <h3 className="text-lg mb-6 text-neutral-900">
-            Detailed Financial Breakdown
-          </h3>
-
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-            {/* Left Column: Our Analysis & Notes */}
-            <div className="space-y-4">
-              <div>
-                <h4 className="text-sm text-neutral-900 mb-2">Our Analysis</h4>
-                <p className="text-sm text-neutral-700 leading-relaxed">
-                  {/* This will come from schema later - using dummy text for now */}
-                  This vehicle represents a strong opportunity based on current
-                  market conditions. The estimated market value is derived from
-                  recent comparable sales in the GTA area. We recommend staying
-                  conservative with your bid to maintain a healthy profit margin
-                  after accounting for all reconditioning costs.
-                </p>
-              </div>
-
-              <div className="pt-4 border-t border-neutral-200">
-                <h4 className="text-sm text-neutral-900 mb-3">
-                  Bidding Strategy
-                </h4>
-                <div className="space-y-2 text-sm">
-                  <div className="flex justify-between">
-                    <span className="text-neutral-700">Market Value:</span>
-                    <span className="text-neutral-900">
-                      {formatCurrency(listing.estimatedMarketValue)}
-                    </span>
-                  </div>
-                  <div className="flex justify-between">
-                    <span className="text-neutral-700">
-                      Recommended Max Bid:
-                    </span>
-                    <span className="text-neutral-900">
-                      {formatCurrency(listing.recommendedMaxBid)}
-                    </span>
-                  </div>
-                  <div className="flex justify-between">
-                    <span className="text-neutral-700">Absolute Max Bid:</span>
-                    <span className="text-neutral-900">
-                      {formatCurrency(listing.absoluteMaxBid)}
-                    </span>
+          <div className="max-w-2xl mx-auto space-y-6">
+            {/* STEP 1: Cost to Door */}
+            <div>
+              <h3 className="text-sm text-neutral-900 mb-3">Cost to Door</h3>
+              <div className="space-y-2 text-sm">
+                <div className="flex justify-between items-center">
+                  <span className="text-neutral-700">If place bid:</span>
+                  <div className="flex items-center gap-1">
+                    <span className="text-neutral-600">$</span>
+                    <input
+                      type="number"
+                      value={bidAmount}
+                      onChange={(e) =>
+                        setBidAmount(parseFloat(e.target.value) || 0)
+                      }
+                      onClick={(e) => e.stopPropagation()}
+                      className="w-24 px-2 py-1 border border-neutral-300 rounded text-right focus:outline-none focus:ring-1 focus:ring-neutral-400"
+                    />
                   </div>
                 </div>
-              </div>
 
-              {/* Reference Links */}
-              {listing.carGurusLink && (
-                <div className="pt-4 border-t border-neutral-200">
-                  <a
-                    href={listing.carGurusLink}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="text-sm text-neutral-900 underline flex items-center gap-1 hover:text-neutral-600"
-                    onClick={(e) => e.stopPropagation()}
-                  >
-                    View Market Value Research{" "}
-                    <ExternalLink className="w-3 h-3" />
-                  </a>
+                <div className="flex justify-between items-center">
+                  <span className="text-neutral-700">
+                    Auction overhead fees:
+                  </span>
+                  <div className="flex items-center gap-1">
+                    <span className="text-neutral-600">$</span>
+                    <input
+                      type="number"
+                      value={auctionOverhead}
+                      onChange={(e) =>
+                        setAuctionOverhead(parseFloat(e.target.value) || 0)
+                      }
+                      onClick={(e) => e.stopPropagation()}
+                      className="w-24 px-2 py-1 border border-neutral-300 rounded text-right focus:outline-none focus:ring-1 focus:ring-neutral-400"
+                    />
+                  </div>
                 </div>
-              )}
+
+                <div className="flex justify-between items-center">
+                  <span className="text-neutral-700">Est. towing to door:</span>
+                  <div className="flex items-center gap-1">
+                    <span className="text-neutral-600">$</span>
+                    <input
+                      type="number"
+                      value={towingCost}
+                      onChange={(e) =>
+                        setTowingCost(parseFloat(e.target.value) || 0)
+                      }
+                      onClick={(e) => e.stopPropagation()}
+                      className="w-24 px-2 py-1 border border-neutral-300 rounded text-right focus:outline-none focus:ring-1 focus:ring-neutral-400"
+                    />
+                  </div>
+                </div>
+
+                <div className="flex justify-between items-center pt-2 border-t border-neutral-300">
+                  <span className="text-neutral-900 font-bold">
+                    Cost to door total:
+                  </span>
+                  <span className="text-neutral-900 font-bold">
+                    {formatCurrency(costToDoor)}
+                  </span>
+                </div>
+              </div>
             </div>
 
-            {/* Right Column: Editable Cost Breakdown */}
-            <div className="space-y-4">
-              <h4 className="text-sm text-neutral-900 mb-3">
-                Cost Breakdown (Editable)
-              </h4>
+            {/* STEP 2: Repair Costs */}
+            <div className="pt-4 border-t border-neutral-200">
+              <div className="flex justify-between items-center mb-3">
+                <h3 className="text-sm text-neutral-900">Repair Costs</h3>
+                <button
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    addRepairItem();
+                  }}
+                  className="text-xs text-neutral-600 hover:text-neutral-900 flex items-center gap-1"
+                >
+                  <Plus className="w-3 h-3" /> Add repair
+                </button>
+              </div>
 
-              <div className="space-y-4">
-                {/* Towing Cost */}
-                <div className="pb-3 border-b border-neutral-200">
-                  <div className="flex justify-between items-start mb-1">
-                    <div className="flex-1">
-                      <p className="text-sm text-neutral-900">Towing</p>
-                      <p className="text-xs text-neutral-600 mt-0.5">
-                        Transport from auction to your lot
-                      </p>
-                    </div>
-                    <div className="flex items-center gap-1">
-                      <span className="text-sm text-neutral-600">$</span>
+              <div className="space-y-3 text-sm">
+                {repairItems.map((item, idx) => (
+                  <div key={idx} className="pb-2 border-b border-neutral-100">
+                    <div className="flex justify-between items-start mb-1">
                       <input
-                        type="number"
-                        defaultValue={listing.towingCost}
-                        onChange={(e) => {
-                          // Will add state management here
+                        type="text"
+                        value={item.description}
+                        onChange={(e) =>
+                          updateRepairItem(idx, "description", e.target.value)
+                        }
+                        onClick={(e) => e.stopPropagation()}
+                        className="flex-1 px-2 py-1 border border-neutral-300 rounded text-sm focus:outline-none focus:ring-1 focus:ring-neutral-400"
+                        placeholder="Repair description"
+                      />
+                      <button
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          removeRepairItem(idx);
                         }}
-                        onClick={(e) => e.stopPropagation()}
-                        className="w-20 px-2 py-1 border border-neutral-300 rounded text-right text-sm focus:outline-none focus:ring-1 focus:ring-neutral-400"
-                      />
+                        className="ml-2 text-neutral-400 hover:text-neutral-700"
+                      >
+                        <X className="w-4 h-4" />
+                      </button>
                     </div>
-                  </div>
-                </div>
-
-                {/* Detailing Cost */}
-                <div className="pb-3 border-b border-neutral-200">
-                  <div className="flex justify-between items-start mb-1">
-                    <div className="flex-1">
-                      <p className="text-sm text-neutral-900">Detailing</p>
-                      <p className="text-xs text-neutral-600 mt-0.5">
-                        Interior and exterior cleaning, minor touch-ups
-                      </p>
-                    </div>
-                    <div className="flex items-center gap-1">
-                      <span className="text-sm text-neutral-600">$</span>
-                      <input
-                        type="number"
-                        defaultValue={listing.detailingCost}
-                        onClick={(e) => e.stopPropagation()}
-                        className="w-20 px-2 py-1 border border-neutral-300 rounded text-right text-sm focus:outline-none focus:ring-1 focus:ring-neutral-400"
-                      />
-                    </div>
-                  </div>
-                </div>
-
-                {/* Repair Costs */}
-                {repairs.length > 0 ? (
-                  repairs.map((repair, idx) => (
-                    <div key={idx} className="pb-3 border-b border-neutral-200">
-                      <div className="flex justify-between items-start mb-2">
-                        <div className="flex-1">
-                          {repair.partsLink && (
-                            <a
-                              href={repair.partsLink}
-                              target="_blank"
-                              rel="noopener noreferrer"
-                              className="text-xs text-neutral-600 underline mt-0.5 inline-flex items-center gap-1"
-                              onClick={(e) => e.stopPropagation()}
-                            >
-                              Parts source <ExternalLink className="w-2 h-2" />
-                            </a>
-                          )}
-                          )
-                        </div>
+                    <div className="flex gap-3">
+                      <div className="flex items-center gap-1 flex-1">
+                        <span className="text-xs text-neutral-600">
+                          Parts: $
+                        </span>
+                        <input
+                          type="number"
+                          value={item.parts}
+                          onChange={(e) =>
+                            updateRepairItem(
+                              idx,
+                              "parts",
+                              parseFloat(e.target.value) || 0
+                            )
+                          }
+                          onClick={(e) => e.stopPropagation()}
+                          className="w-20 px-2 py-1 border border-neutral-300 rounded text-right text-xs focus:outline-none focus:ring-1 focus:ring-neutral-400"
+                        />
                       </div>
-                      <div className="space-y-1">
-                        <div className="flex justify-between items-center">
-                          <span className="text-xs text-neutral-600">
-                            Parts cost
-                          </span>
-                          <div className="flex items-center gap-1">
-                            <span className="text-xs text-neutral-600">$</span>
-                            <input
-                              type="number"
-                              defaultValue={repair.partsCost}
-                              onClick={(e) => e.stopPropagation()}
-                              className="w-20 px-2 py-1 border border-neutral-300 rounded text-right text-xs focus:outline-none focus:ring-1 focus:ring-neutral-400"
-                            />
-                          </div>
-                        </div>
-                        <div className="flex justify-between items-center">
-                          <span className="text-xs text-neutral-600">
-                            Labour cost
-                          </span>
-                          <div className="flex items-center gap-1">
-                            <span className="text-xs text-neutral-600">$</span>
-                            <input
-                              type="number"
-                              defaultValue={repair.labour}
-                              onClick={(e) => e.stopPropagation()}
-                              className="w-20 px-2 py-1 border border-neutral-300 rounded text-right text-xs focus:outline-none focus:ring-1 focus:ring-neutral-400"
-                            />
-                          </div>
-                        </div>
+                      <div className="flex items-center gap-1 flex-1">
+                        <span className="text-xs text-neutral-600">
+                          Labour: $
+                        </span>
+                        <input
+                          type="number"
+                          value={item.labour}
+                          onChange={(e) =>
+                            updateRepairItem(
+                              idx,
+                              "labour",
+                              parseFloat(e.target.value) || 0
+                            )
+                          }
+                          onClick={(e) => e.stopPropagation()}
+                          className="w-20 px-2 py-1 border border-neutral-300 rounded text-right text-xs focus:outline-none focus:ring-1 focus:ring-neutral-400"
+                        />
                       </div>
                     </div>
-                  ))
-                ) : (
-                  <div className="pb-3 border-b border-neutral-200">
-                    <p className="text-sm text-neutral-900">Repairs</p>
-                    <p className="text-xs text-neutral-600 mt-0.5">
-                      No repairs needed
-                    </p>
                   </div>
-                )}
+                ))}
 
-                {/* Damage Estimate */}
-                <div className="pb-3 border-b border-neutral-200">
-                  <div className="flex justify-between items-start mb-1">
-                    <div className="flex-1">
-                      <p className="text-sm text-neutral-900">
-                        Additional Damage Estimate
-                      </p>
-                      <p className="text-xs text-neutral-600 mt-0.5">
-                        Unforeseen repairs or hidden damage buffer
-                      </p>
-                    </div>
-                    <div className="flex items-center gap-1">
-                      <span className="text-sm text-neutral-600">$</span>
-                      <input
-                        type="number"
-                        defaultValue={listing.damageEstimate}
-                        onClick={(e) => e.stopPropagation()}
-                        className="w-20 px-2 py-1 border border-neutral-300 rounded text-right text-sm focus:outline-none focus:ring-1 focus:ring-neutral-400"
-                      />
-                    </div>
+                <div className="flex justify-between items-center">
+                  <span className="text-neutral-700">Detailing:</span>
+                  <div className="flex items-center gap-1">
+                    <span className="text-neutral-600">$</span>
+                    <input
+                      type="number"
+                      value={detailingCost}
+                      onChange={(e) =>
+                        setDetailingCost(parseFloat(e.target.value) || 0)
+                      }
+                      onClick={(e) => e.stopPropagation()}
+                      className="w-24 px-2 py-1 border border-neutral-300 rounded text-right focus:outline-none focus:ring-1 focus:ring-neutral-400"
+                    />
                   </div>
                 </div>
 
-                {/* Extra Costs */}
-                <div className="pb-3 border-b border-neutral-200">
-                  <div className="flex justify-between items-start mb-1">
-                    <div className="flex-1">
-                      <p className="text-sm text-neutral-900">Extra Costs</p>
-                      <p className="text-xs text-neutral-600 mt-0.5">
-                        Safety certification, admin fees, storage
-                      </p>
-                    </div>
-                    <div className="flex items-center gap-1">
-                      <span className="text-sm text-neutral-600">$</span>
-                      <input
-                        type="number"
-                        defaultValue={listing.extraCosts}
-                        onClick={(e) => e.stopPropagation()}
-                        className="w-20 px-2 py-1 border border-neutral-300 rounded text-right text-sm focus:outline-none focus:ring-1 focus:ring-neutral-400"
-                      />
-                    </div>
+                <div className="flex justify-between items-center">
+                  <span className="text-neutral-700">
+                    Safety cert & buffer costs:
+                  </span>
+                  <div className="flex items-center gap-1">
+                    <span className="text-neutral-600">$</span>
+                    <input
+                      type="number"
+                      value={bufferCosts}
+                      onChange={(e) =>
+                        setBufferCosts(parseFloat(e.target.value) || 0)
+                      }
+                      onClick={(e) => e.stopPropagation()}
+                      className="w-24 px-2 py-1 border border-neutral-300 rounded text-right focus:outline-none focus:ring-1 focus:ring-neutral-400"
+                    />
                   </div>
                 </div>
 
-                {/* Total Costs - Calculated */}
-                <div className="pt-3">
-                  <div className="flex justify-between items-center">
-                    <span className="text-sm text-neutral-900">
-                      Total Estimated Costs:
-                    </span>
-                    <span className="text-base text-neutral-900">
-                      {formatCurrency(totalEstimatedCosts)}
-                    </span>
-                  </div>
-                </div>
-
-                {/* Total Investment */}
-                <div className="pt-2 border-t border-neutral-300">
-                  <div className="flex justify-between items-center">
-                    <span className="text-sm text-neutral-900">
-                      Total Investment (Bid + Costs):
-                    </span>
-                    <span className="text-base text-neutral-900">
-                      {formatCurrency(bidAmount + totalEstimatedCosts)}
-                    </span>
-                  </div>
-                </div>
-
-                {/* Final Profit */}
-                <div className="pt-2 border-t-2 border-neutral-900">
-                  <div className="flex justify-between items-center">
-                    <span className="text-sm text-neutral-900">
-                      Expected Profit:
-                    </span>
-                    <span className="text-lg text-neutral-900">
-                      {formatCurrency(calculatedProfit)}
-                    </span>
-                  </div>
+                <div className="flex justify-between items-center pt-2 border-t border-neutral-300">
+                  <span className="text-neutral-900 font-bold">
+                    Ready to sell total:
+                  </span>
+                  <span className="text-neutral-900 font-bold">
+                    {formatCurrency(readyToSellTotal)}
+                  </span>
                 </div>
               </div>
             </div>
+
+            {/* STEP 3: Selling Price & Profit */}
+            <div className="pt-4 border-t border-neutral-200 space-y-2 text-sm">
+              <div className="flex justify-between items-center">
+                <span className="text-neutral-700">
+                  Selling price (Market Value):
+                </span>
+                <span className="text-neutral-900">
+                  {formatCurrency(listing.estimatedMarketValue)}
+                </span>
+              </div>
+
+              <div className="pt-3 border-t-2 border-neutral-900">
+                <div className="flex justify-between items-center">
+                  <span className="text-neutral-900 font-bold">Profit:</span>
+                  <span className="text-neutral-900 font-bold text-lg">
+                    {formatCurrency(calculatedProfit)}
+                  </span>
+                </div>
+              </div>
+            </div>
+
+            {/* Reference Link */}
+            {listing.carGurusLink && (
+              <div className="pt-4 border-t border-neutral-200">
+                <a
+                  href={listing.carGurusLink}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-sm text-neutral-900 underline flex items-center gap-1 hover:text-neutral-600"
+                  onClick={(e) => e.stopPropagation()}
+                >
+                  View market value research{" "}
+                  <ExternalLink className="w-3 h-3" />
+                </a>
+              </div>
+            )}
           </div>
         </div>
       )}
