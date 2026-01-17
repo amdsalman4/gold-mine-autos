@@ -25,7 +25,7 @@ export default function Hero() {
                 High-Margin Cars Only
               </span>{" "}
               <br />
-              Handpicked for Your Dealership
+              Handpicked for Ontario Dealers
             </h1>
             <p className="text-muted-foreground mx-auto mt-6 max-w-2xl text-lg leading-8">
               We work one-on-one to 3x your margins: delivering Canada's best

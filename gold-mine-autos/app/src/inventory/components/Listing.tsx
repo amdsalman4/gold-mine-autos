@@ -1,13 +1,7 @@
 // inventory/components/Listing.tsx
 
 import { useState } from "react";
-import {
-  ChevronDown,
-  ChevronUp,
-  ExternalLink,
-  MapPin,
-  Clock,
-} from "lucide-react";
+import { ChevronDown, ChevronUp, ExternalLink, Clock } from "lucide-react";
 import { Card } from "../../client/components/ui/card";
 import { Button } from "../../client/components/ui/button";
 import { cn } from "../../client/utils";
@@ -49,147 +43,196 @@ export function Listing({ listing }: { listing: ListingType }) {
     }
   };
 
+  // Format auction date/time
+  const formatAuctionDate = () => {
+    const date = new Date(listing.auctionDate);
+    return (
+      date.toLocaleDateString("en-US", {
+        weekday: "short",
+        month: "short",
+        day: "numeric",
+        hour: "numeric",
+        minute: "2-digit",
+        hour12: true,
+      }) + " EST"
+    );
+  };
+
   // Parse repairs JSON
   const repairs: RepairItem[] = listing.repairs?.items || [];
   const totalRepairCost = repairs.reduce(
     (sum, r) => sum + r.partsCost + r.labour,
     0
   );
+  const totalEstimatedCosts =
+    listing.towingCost +
+    listing.detailingCost +
+    listing.damageEstimate +
+    listing.extraCosts +
+    totalRepairCost;
 
   return (
-    <Card className="w-full border-b border-neutral-200 hover:bg-neutral-50 transition-all">
-      <div className="flex flex-col lg:flex-row items-stretch justify-between w-full gap-4 p-4">
-        {/* Column 1: Vehicle Info */}
-        <div className="flex flex-col gap-2 flex-1 min-w-0">
-          {listing.primaryImage && (
+    <div className="w-full border-b border-neutral-200 hover:bg-neutral-50/50 transition-all">
+      {/* Top Row: Tags */}
+      <div className="flex items-center justify-between px-4 pt-4 pb-2">
+        {/* Left: Estimated Costs Tag */}
+        <div className="flex items-center gap-2">
+          <span className="bg-red-100 text-red-700 px-3 py-1.5 rounded-full text-xs font-semibold border border-red-200">
+            Est. Costs: {formatCurrency(totalEstimatedCosts)}
+          </span>
+        </div>
+
+        {/* Right: Time + Market Value Tags */}
+        <div className="flex items-center gap-2">
+          <span className="bg-orange-100 text-orange-700 px-3 py-1.5 rounded-full text-xs font-semibold border border-orange-200 flex items-center gap-1">
+            <Clock className="w-4 h-4" />
+            {getTimeUntilAuction()}
+          </span>
+
+          <a
+            href={listing.carGurusLink || "#"}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="bg-green-100 text-green-700 px-3 py-1.5 rounded-full text-m font-semibold border border-green-200 hover:bg-green-200 transition-colors flex items-center gap-1"
+            onClick={(e) => {
+              if (!listing.carGurusLink) {
+                e.preventDefault();
+              }
+            }}
+          >
+            Market Value: {formatCurrency(listing.estimatedMarketValue)}
+            {listing.carGurusLink && <ExternalLink className="w-4 h-4" />}
+          </a>
+        </div>
+      </div>
+
+      {/* Main Content Row */}
+      <div className="grid grid-cols-12 gap-4 px-4 pb-4">
+        {/* Column 1: Image (col-span-2) */}
+        <div className="col-span-2 flex flex-col items-center">
+          {listing.primaryImage ? (
             <img
               src={listing.primaryImage}
               alt={`${listing.year} ${listing.make} ${listing.model}`}
-              className="w-full max-w-[200px] rounded-md object-cover"
+              className="w-[200px] h-[160px] rounded object-cover"
               onError={(e) => {
-                // Fallback if image fails to load
-                e.currentTarget.style.display = "none";
+                e.currentTarget.src =
+                  "https://via.placeholder.com/150x110?text=No+Image";
               }}
             />
+          ) : (
+            <div className="w-[150px] h-[110px] bg-neutral-200 rounded flex items-center justify-center text-neutral-400 text-xs">
+              No Image
+            </div>
           )}
+          {listing.imageUrls && listing.imageUrls.length > 1 && (
+            <a
+              href={listing.auctionLink}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-xs text-primary hover:underline mt-2"
+            >
+              View All Images
+            </a>
+          )}
+        </div>
+
+        {/* Column 2: Vehicle Title & Basic Info (col-span-5) */}
+        <div className="col-span-5 flex flex-col gap-2">
           <a
             href={listing.auctionLink}
             target="_blank"
             rel="noopener noreferrer"
-            className="font-bold text-lg text-neutral-900 hover:text-primary line-clamp-1"
+            className="font-bold text-lg text-neutral-900 hover:text-primary uppercase"
           >
             {listing.year} {listing.make} {listing.model}
           </a>
 
-          <p className="text-neutral-700 text-sm">
-            {listing.trim && <span>{listing.trim} / </span>}
-            {formatKm(listing.kilometers)}
-          </p>
-
-          {listing.vin && (
-            <p className="text-xs font-medium text-neutral-600">
-              {listing.vin}
-            </p>
-          )}
+          {/* VIN, Stock, Damage */}
+          <div className="space-y-1 text-sm">
+            <div>
+              <span className="text-neutral-600">VIN #: </span>
+              <span className="font-medium">{listing.vin || "N/A"}</span>
+            </div>
+            {listing.trim && (
+              <div>
+                <span className="text-neutral-600">Trim: </span>
+                <span className="font-medium">{listing.trim}</span>
+              </div>
+            )}
+            <div>
+              <span className="text-neutral-600">Damage Estimate: </span>
+              <span className="font-medium">
+                {formatCurrency(listing.damageEstimate)}
+              </span>
+            </div>
+          </div>
 
           {/* Main selling points */}
           {listing.mainPoints.length > 0 && (
             <div className="flex flex-wrap gap-1 mt-1">
-              {listing.mainPoints.slice(0, 3).map((point, idx) => (
+              {listing.mainPoints.slice(0, 4).map((point, idx) => (
                 <span
                   key={idx}
-                  className="text-xs bg-green-100 text-green-800 px-2 py-1 rounded-full"
+                  className="text-xs  px-2 py-0.5 rounded border "
                 >
                   {point}
                 </span>
               ))}
             </div>
           )}
-
-          {/* Damage estimate at bottom */}
-          <p className="text-sm text-red-600 font-medium mt-auto">
-            Damage Est: {formatCurrency(listing.damageEstimate)}
-          </p>
         </div>
 
-        {/* Column 2: Auction Details */}
-        <div className="flex flex-col gap-2 border-l border-dashed border-neutral-200 pl-4 min-w-[180px]">
-          <a
-            href={listing.auctionLink}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="text-sm text-primary hover:underline flex items-center gap-1"
-          >
-            View Auction <ExternalLink className="w-3 h-3" />
-          </a>
-
-          <div className="flex items-center gap-1 text-sm text-neutral-700">
-            <MapPin className="w-4 h-4" />
-            <span>Location TBD</span> {/* Add location to schema if needed */}
+        {/* Column 3: Specs (col-span-2) */}
+        <div className="col-span-2 flex flex-col gap-2 text-sm">
+          <div>
+            <span className="font-medium">{formatKm(listing.kilometers)}</span>
           </div>
-
+          <div>
+            <span className="text-neutral-600">Transmission: </span>
+            <span>Auto</span>
+          </div>
           {listing.currentHighBidder ? (
-            <div className="text-sm">
-              <p className="text-neutral-600">Current Bid:</p>
-              <p className="font-semibold">
+            <div>
+              <span className="text-neutral-600">Current Bid: </span>
+              <span className="font-semibold">
                 {formatCurrency(listing.currentHighBid || 0)}
-              </p>
-              <p className="text-xs text-neutral-500">
-                {listing.currentHighBidder}
-              </p>
+              </span>
             </div>
           ) : (
-            <p className="text-sm text-green-600 font-medium">No bids yet</p>
+            <span className="text-green-600 font-medium">No bids yet</span>
           )}
         </div>
 
-        {/* Column 3: Financial Summary */}
-        <div className="flex flex-col gap-3 border-l border-dashed border-neutral-200 pl-4 min-w-[220px]">
-          {/* Time until auction */}
-          <div className="flex items-center gap-2 text-sm font-medium text-orange-600">
-            <Clock className="w-4 h-4" />
-            {getTimeUntilAuction()}
+        {/* Column 4: Auction Details & Profit (col-span-3) */}
+        <div className="col-span-3 flex flex-col gap-2">
+          {/* Auction Date/Time */}
+          <div className="text-sm">
+            <div className="font-semibold text-neutral-900">
+              {formatAuctionDate()}
+            </div>
+            {/* <div className="text-neutral-600 text-xs mt-1">
+              Status:{" "}
+              <span className="text-green-600 font-semibold uppercase">
+                Active
+              </span>
+            </div> */}
           </div>
 
-          {/* Financial metrics */}
-          <div className="space-y-1 text-sm">
-            <div className="flex justify-between">
-              <span className="text-neutral-600">Est. Market Value:</span>
-              <span className="font-semibold">
-                {formatCurrency(listing.estimatedMarketValue)}
-              </span>
+          {/* Profit Badge */}
+          <div className="border border-grey-200 rounded-lg p-3 mt-2">
+            <div className="text-xs text-neutral-600 mb-1">
+              Estimated Profit
             </div>
-
-            <div className="flex justify-between">
-              <span className="text-neutral-600">Recommended Max:</span>
-              <span className="font-semibold text-blue-600">
-                {formatCurrency(listing.recommendedMaxBid)}
-              </span>
-            </div>
-
-            <div className="flex justify-between">
-              <span className="text-neutral-600">Absolute Max:</span>
-              <span className="font-semibold text-orange-600">
-                {formatCurrency(listing.absoluteMaxBid)}
-              </span>
-            </div>
-
-            <div className="flex justify-between border-t pt-1 mt-1">
-              <span className="text-neutral-600">Total Investment:</span>
-              <span className="font-semibold">
-                {formatCurrency(listing.estimatedTotalInvestment)}
-              </span>
-            </div>
-
-            <div className="flex justify-between bg-green-50 px-2 py-1 rounded">
-              <span className="text-green-700 font-medium">Profit:</span>
-              <span className="font-bold text-green-700">
-                {formatCurrency(listing.profitMargin)}
-              </span>
+            {/* <div className="text-2xl font-bold text-green-700">
+              {formatCurrency(listing.profitMargin)}
+            </div> */}
+            <div className="text-xs text-neutral-500 mt-1">
+              Max Bid: {formatCurrency(listing.recommendedMaxBid)}
             </div>
           </div>
 
-          {/* View calculations button */}
+          {/* Check Calculation Button */}
           <Button
             variant="outline"
             size="sm"
@@ -202,7 +245,7 @@ export function Listing({ listing }: { listing: ListingType }) {
               </>
             ) : (
               <>
-                View Calculations <ChevronDown className="ml-2 w-4 h-4" />
+                Check Calculations <ChevronDown className="ml-2 w-4 h-4" />
               </>
             )}
           </Button>
@@ -211,96 +254,132 @@ export function Listing({ listing }: { listing: ListingType }) {
 
       {/* Expandable Details Section */}
       {showDetails && (
-        <div className="border-t border-neutral-200 p-4 bg-neutral-50">
-          <h3 className="font-semibold text-base mb-3">Detailed Breakdown</h3>
+        <div className="border-t border-neutral-200 bg-neutral-50 px-6 py-4">
+          <h3 className="font-semibold text-base mb-4 text-neutral-900">
+            Detailed Financial Breakdown
+          </h3>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            {/* Cost Breakdown */}
-            <div>
-              <h4 className="font-medium text-sm text-neutral-700 mb-2">
-                Estimated Costs
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+            {/* Column 1: Bidding Strategy */}
+            <div className="bg-white rounded-lg border border-neutral-200 p-4">
+              <h4 className="font-semibold text-sm text-neutral-700 mb-3 border-b pb-2">
+                Bidding Strategy
               </h4>
-              <div className="space-y-1 text-sm">
+              <div className="space-y-2 text-sm">
                 <div className="flex justify-between">
-                  <span>Towing:</span>
-                  <span>{formatCurrency(listing.towingCost)}</span>
+                  <span className="text-neutral-600">Market Value:</span>
+                  <span className="font-semibold">
+                    {formatCurrency(listing.estimatedMarketValue)}
+                  </span>
                 </div>
                 <div className="flex justify-between">
-                  <span>Detailing:</span>
-                  <span>{formatCurrency(listing.detailingCost)}</span>
+                  <span className="text-blue-600">Recommended Max:</span>
+                  <span className="font-semibold text-blue-600">
+                    {formatCurrency(listing.recommendedMaxBid)}
+                  </span>
                 </div>
                 <div className="flex justify-between">
-                  <span>Repairs (Total):</span>
-                  <span>{formatCurrency(totalRepairCost)}</span>
+                  <span className="text-orange-600">Absolute Max:</span>
+                  <span className="font-semibold text-orange-600">
+                    {formatCurrency(listing.absoluteMaxBid)}
+                  </span>
                 </div>
-                <div className="flex justify-between">
-                  <span>Extra Costs:</span>
-                  <span>{formatCurrency(listing.extraCosts)}</span>
-                </div>
-                <div className="flex justify-between font-semibold border-t pt-1">
-                  <span>Total Costs:</span>
-                  <span>
-                    {formatCurrency(
-                      listing.towingCost +
-                        listing.detailingCost +
-                        totalRepairCost +
-                        listing.extraCosts
-                    )}
+                <div className="flex justify-between pt-2 border-t">
+                  <span className="text-neutral-600">Total Investment:</span>
+                  <span className="font-semibold">
+                    {formatCurrency(listing.estimatedTotalInvestment)}
                   </span>
                 </div>
               </div>
             </div>
 
-            {/* Repair Items */}
-            {repairs.length > 0 && (
-              <div>
-                <h4 className="font-medium text-sm text-neutral-700 mb-2">
-                  Repair Details
-                </h4>
-                <div className="space-y-2">
+            {/* Column 2: Cost Breakdown */}
+            <div className="bg-white rounded-lg border border-neutral-200 p-4">
+              <h4 className="font-semibold text-sm text-neutral-700 mb-3 border-b pb-2">
+                Cost Breakdown
+              </h4>
+              <div className="space-y-2 text-sm">
+                <div className="flex justify-between">
+                  <span className="text-neutral-600">Towing:</span>
+                  <span>{formatCurrency(listing.towingCost)}</span>
+                </div>
+                <div className="flex justify-between">
+                  <span className="text-neutral-600">Detailing:</span>
+                  <span>{formatCurrency(listing.detailingCost)}</span>
+                </div>
+                <div className="flex justify-between">
+                  <span className="text-neutral-600">Repairs:</span>
+                  <span>{formatCurrency(totalRepairCost)}</span>
+                </div>
+                <div className="flex justify-between">
+                  <span className="text-neutral-600">Damage Estimate:</span>
+                  <span>{formatCurrency(listing.damageEstimate)}</span>
+                </div>
+                <div className="flex justify-between">
+                  <span className="text-neutral-600">Extra Costs:</span>
+                  <span>{formatCurrency(listing.extraCosts)}</span>
+                </div>
+                <div className="flex justify-between pt-2 border-t font-semibold">
+                  <span>Total Costs:</span>
+                  <span>{formatCurrency(totalEstimatedCosts)}</span>
+                </div>
+              </div>
+            </div>
+
+            {/* Column 3: Repair Details */}
+            <div className="bg-white rounded-lg border border-neutral-200 p-4">
+              <h4 className="font-semibold text-sm text-neutral-700 mb-3 border-b pb-2">
+                Repair Details
+              </h4>
+              {repairs.length > 0 ? (
+                <div className="space-y-3">
                   {repairs.map((repair, idx) => (
                     <div
                       key={idx}
-                      className="text-sm border-l-2 border-blue-300 pl-2"
+                      className="text-sm border-l-2 border-blue-300 pl-3"
                     >
-                      <p className="font-medium">{repair.description}</p>
-                      <div className="text-xs text-neutral-600">
-                        Parts: {formatCurrency(repair.partsCost)} | Labour:{" "}
-                        {formatCurrency(repair.labour)}
+                      <p className="font-medium text-neutral-900">
+                        {repair.description}
+                      </p>
+                      <div className="text-xs text-neutral-600 mt-1 space-y-0.5">
+                        <div>Parts: {formatCurrency(repair.partsCost)}</div>
+                        <div>Labour: {formatCurrency(repair.labour)}</div>
                         {repair.partsLink && (
                           <a
                             href={repair.partsLink}
                             target="_blank"
                             rel="noopener noreferrer"
-                            className="text-primary hover:underline ml-2"
+                            className="text-primary hover:underline flex items-center gap-1"
                           >
-                            Link <ExternalLink className="inline w-3 h-3" />
+                            Parts Link <ExternalLink className="w-3 h-3" />
                           </a>
                         )}
                       </div>
                     </div>
                   ))}
                 </div>
-              </div>
-            )}
+              ) : (
+                <p className="text-sm text-neutral-500">No repairs needed</p>
+              )}
+            </div>
           </div>
 
-          {/* CarGurus Reference */}
+          {/* Reference Links */}
           {listing.carGurusLink && (
-            <div className="mt-3 pt-3 border-t">
+            <div className="mt-4 pt-4 border-t">
               <a
                 href={listing.carGurusLink}
                 target="_blank"
                 rel="noopener noreferrer"
                 className="text-sm text-primary hover:underline flex items-center gap-1"
               >
-                View Market Value Reference (CarGurus){" "}
+                View Market Value Research (CarGurus){" "}
                 <ExternalLink className="w-3 h-3" />
               </a>
             </div>
           )}
         </div>
       )}
-    </Card>
+    </div>
   );
 }
