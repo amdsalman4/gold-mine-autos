@@ -65,7 +65,7 @@ const AddListingForm = ({ onClose }: AddListingFormProps) => {
         listingData.mainPoints = [];
       }
 
-      // Create the listing
+      // Around line 60 in handleJsonImport
       await createListing({
         make: listingData.make,
         model: listingData.model,
@@ -73,12 +73,26 @@ const AddListingForm = ({ onClose }: AddListingFormProps) => {
         kilometers: parseInt(listingData.kilometers),
         vin: listingData.vin || undefined,
         trim: listingData.trim || undefined,
+        transmission: listingData.transmission || undefined, // NEW
+        engine: listingData.engine || undefined, // NEW
+        fuelType: listingData.fuelType || undefined, // NEW
+        drivetrain: listingData.drivetrain || undefined, // NEW
+
         auctionLink: listingData.auctionLink,
         auctionDate: listingData.auctionDate,
         currentHighBid: listingData.currentHighBid
           ? parseFloat(listingData.currentHighBid)
           : undefined,
         currentHighBidder: listingData.currentHighBidder || undefined,
+        auctionLocation: listingData.auctionLocation || undefined, // NEW
+        auctionSite: listingData.auctionSite || undefined, // NEW
+        lotNumber: listingData.lotNumber || undefined, // NEW
+        laneNumber: listingData.laneNumber || undefined, // NEW
+
+        vehicleStatus: listingData.vehicleStatus || undefined, // NEW
+        damageArea: listingData.damageArea || undefined, // NEW
+        titleBrand: listingData.titleBrand || undefined, // NEW
+
         damageEstimate: parseFloat(listingData.damageEstimate || 0),
         estimatedMarketValue: parseFloat(listingData.estimatedMarketValue || 0),
         recommendedMaxBid: parseFloat(listingData.recommendedMaxBid || 0),
@@ -87,17 +101,24 @@ const AddListingForm = ({ onClose }: AddListingFormProps) => {
         estimatedTotalInvestment: parseFloat(
           listingData.estimatedTotalInvestment || 0
         ),
+
+        analysisNotes: listingData.analysisNotes || undefined, // NEW
+
         mainPoints: listingData.mainPoints || [],
         carGurusLink: listingData.carGurusLink || undefined,
+
+        auctionOverhead: parseFloat(listingData.auctionOverhead || 500), // NEW
         towingCost: parseFloat(listingData.towingCost || 0),
         detailingCost: parseFloat(listingData.detailingCost || 0),
         extraCosts: parseFloat(listingData.extraCosts || 0),
         repairs: listingData.repairs || null,
-        status: listingData.status || "active",
+
         imageUrls: listingData.imageUrls || [],
         primaryImage:
           listingData.primaryImage || listingData.imageUrls?.[0] || undefined,
-      } as any);
+
+        status: listingData.status || "active",
+      });
 
       alert("Listing created successfully from JSON!");
       onClose();

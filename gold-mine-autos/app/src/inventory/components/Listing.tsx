@@ -235,6 +235,15 @@ export function Listing({ listing }: { listing: ListingType }) {
             <span className="text-neutral-600">Stock #: </span>
             <span>{listing.id.slice(0, 8)}</span>
           </div>
+          {/* Analysis Notes in expandable section */}
+          {/* {listing.analysisNotes && (
+            <div>
+              <h4 className="text-sm text-neutral-900 mb-2">Our Analysis</h4>
+              <p className="text-sm text-neutral-700 leading-relaxed">
+                {listing.analysisNotes}
+              </p>
+            </div>
+          )} */}
 
           {/* Damage Area - Dummy for now */}
           <div className="text-sm">
@@ -271,33 +280,41 @@ export function Listing({ listing }: { listing: ListingType }) {
           {/* Transmission */}
           <div>
             <span className="text-neutral-600">Transmission: </span>
-            <span>Auto</span>
+            <span>{listing.transmission || "Auto"}</span>
           </div>
 
-          {/* Status - Dummy for now */}
+          {/* Status */}
           <div>
-            <span className="text-green-600">Starts</span>
+            <span
+              className={
+                listing.vehicleStatus === "Stationary"
+                  ? "text-red-600"
+                  : "text-green-600"
+              }
+            >
+              {listing.vehicleStatus || "Starts"}
+            </span>
           </div>
 
-          {/* Engine - Dummy for now */}
+          {/* Engine */}
           <div>
             <span className="text-neutral-600">Engine: </span>
-            <span>2.0L I4</span>
+            <span>{listing.engine || "N/A"}</span>
           </div>
         </div>
 
         {/* Column 4: Location & Title Info (col-span-2) */}
         <div className="col-span-2 flex flex-col gap-1 text-sm">
-          {/* Location - Dummy for now */}
+          {/* Location */}
           <div>
             <a href="#" className="text-primary hover:underline">
-              Toronto (Oshawa)
+              {listing.auctionLocation || "N/A"}
             </a>
           </div>
 
-          {/* Lane/Run - Dummy */}
+          {/* Lane/Run */}
           <div>
-            <span>Lane: 3 Run: 45</span>
+            <span>{listing.laneNumber || "N/A"}</span>
           </div>
 
           {/* Location Name */}
@@ -305,10 +322,14 @@ export function Listing({ listing }: { listing: ListingType }) {
             <span className="text-neutral-600">Location: </span>
             <span>IAA Toronto</span>
           </div>
-
-          {/* Title Brand - Dummy for now */}
+          {/* Auction Site */}
           <div>
-            <span>ON-NOT BRANDED</span>
+            <span className="text-neutral-600">Location: </span>
+            <span>{listing.auctionSite || "IAA Toronto"}</span>
+          </div>
+          {/* Title Brand */}
+          <div>
+            <span>{listing.titleBrand || "ON-NOT BRANDED"}</span>
           </div>
         </div>
 

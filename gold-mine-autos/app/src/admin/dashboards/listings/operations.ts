@@ -8,7 +8,8 @@ import type {
 import type { Listing } from "wasp/entities";
 import * as z from "zod";
 
-// Schema for creating a listing
+// admin/dashboards/listings/operations.ts
+
 const createListingSchema = z.object({
   make: z.string(),
   model: z.string(),
@@ -16,25 +17,46 @@ const createListingSchema = z.object({
   kilometers: z.number(),
   vin: z.string().optional(),
   trim: z.string().optional(),
+  transmission: z.string().optional(), // NEW
+  engine: z.string().optional(), // NEW
+  fuelType: z.string().optional(), // NEW
+  drivetrain: z.string().optional(), // NEW
+
   auctionLink: z.string(),
-  auctionDate: z.string(), // ISO date string
+  auctionDate: z.string(),
   currentHighBid: z.number().optional(),
   currentHighBidder: z.string().optional(),
+  auctionLocation: z.string().optional(), // NEW
+  auctionSite: z.string().optional(), // NEW
+  lotNumber: z.string().optional(), // NEW
+  laneNumber: z.string().optional(), // NEW
+
+  vehicleStatus: z.string().optional(), // NEW
+  damageArea: z.string().optional(), // NEW
+  titleBrand: z.string().optional(), // NEW
+
   damageEstimate: z.number(),
   estimatedMarketValue: z.number(),
   recommendedMaxBid: z.number(),
   absoluteMaxBid: z.number(),
   profitMargin: z.number(),
   estimatedTotalInvestment: z.number(),
+
+  analysisNotes: z.string().optional(), // NEW
+
   mainPoints: z.array(z.string()),
   carGurusLink: z.string().optional(),
+
+  auctionOverhead: z.number().default(500), // NEW
   towingCost: z.number().default(0),
   detailingCost: z.number().default(0),
   extraCosts: z.number().default(0),
-  repairs: z.any().optional(), // JSON
-  status: z.string().default("active"),
+  repairs: z.any().optional(),
+
   imageUrls: z.array(z.string()).default([]),
   primaryImage: z.string().optional(),
+
+  status: z.string().default("active"),
 });
 
 type CreateListingInput = z.infer<typeof createListingSchema>;

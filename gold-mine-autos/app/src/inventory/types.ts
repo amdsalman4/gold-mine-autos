@@ -3,6 +3,7 @@
 export type Listing = {
   id: string;
   createdAt: Date;
+  updatedAt: Date;
 
   // Vehicle info
   make: string;
@@ -11,12 +12,29 @@ export type Listing = {
   kilometers: number;
   vin: string | null;
   trim: string | null;
+  transmission: string | null; // NEW
+  engine: string | null; // NEW
+  fuelType: string | null; // NEW
+  drivetrain: string | null; // NEW
 
   // Auction details
   auctionLink: string;
   auctionDate: Date;
   currentHighBid: number | null;
   currentHighBidder: string | null;
+  auctionLocation: string | null; // NEW
+  auctionSite: string | null; // NEW
+  lotNumber: string | null; // NEW
+  laneNumber: string | null; // NEW
+
+  // Vehicle condition
+  vehicleStatus: string | null; // NEW
+  damageArea: string | null; // NEW
+  titleBrand: string | null; // NEW
+
+  // Images
+  imageUrls: string[];
+  primaryImage: string | null;
 
   // Damage
   damageEstimate: number;
@@ -28,19 +46,21 @@ export type Listing = {
   profitMargin: number;
   estimatedTotalInvestment: number;
 
+  // Admin analysis
+  analysisNotes: string | null; // NEW
+
   // Details
   mainPoints: string[];
   carGurusLink: string | null;
 
   // Costs
+  auctionOverhead: number; // NEW
   towingCost: number;
   detailingCost: number;
   extraCosts: number;
-  repairs: any; // JSON type
+  repairs: any;
 
   status: string;
-  imageUrls: string[];
-  primaryImage: string | null;
 };
 
 export type RepairItem = {
