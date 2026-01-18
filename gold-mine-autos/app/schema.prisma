@@ -125,35 +125,52 @@ model Listing {
   kilometers                Int
   vin                       String?
   trim                      String?
-
+  transmission              String?         // "Auto", "Manual"
+  engine                    String?         // "2.0L I4", "3.5L V6"
+  fuelType                  String?         // "Gas", "Diesel", "Electric", "Hybrid"
+  drivetrain                String?         // "FWD", "RWD", "AWD", "4WD"
+  
   // Auction Details
   auctionLink               String
   auctionDate               DateTime
   currentHighBid            Float?
-  currentHighBidder         String?         // e.g., "Bidder #1234" or null if no bids
-
-// Images
+  currentHighBidder         String?
+  auctionLocation           String?         // "Toronto (Oshawa)"
+  auctionSite               String?         // "IAA Toronto", "Copart"
+  lotNumber                 String?         // "12471031"
+  laneNumber                String?         // "Lane: 3 Run: 45"
+  
+  // Vehicle Condition
+  vehicleStatus             String?         // "Starts", "Runs", "Stationary"
+  damageArea                String?         // "Front End", "Left Side"
+  titleBrand                String?         // "ON-NOT BRANDED", "ON-SALVAGE"
+  
+  // Images
   imageUrls                 String[]        @default([])
   primaryImage              String?
   
   // Damage Assessment
-  damageEstimate            Float           // Dollar amount for repair costs
+  damageEstimate            Float
   
   // Financial Report
-  estimatedMarketValue      Float           // What it's worth in good condition
-  recommendedMaxBid         Float           // Conservative bid ceiling
-  absoluteMaxBid            Float           // Absolute ceiling (riskier)
-  profitMargin              Float           // estimatedMarketValue - recommendedMaxBid - all costs
-  estimatedTotalInvestment   Float
+  estimatedMarketValue      Float
+  recommendedMaxBid         Float
+  absoluteMaxBid            Float
+  profitMargin              Float
+  estimatedTotalInvestment  Float
+  
+  // Admin Analysis Notes
+  analysisNotes             String?         // Admin's written analysis (2-3 sentences)
   
   // Report Details - Main Selling Points
-  mainPoints                String[]        // ["One owner", "Charity car", "No bidders yet"]
-  carGurusLink              String?         // Reference link for market value research
+  mainPoints                String[]
+  carGurusLink              String?
   
   // Estimated Costs Breakdown
+  auctionOverhead           Float           @default(500)    // Auction fees
   towingCost                Float           @default(0)
   detailingCost             Float           @default(0)
-  extraCosts                Float           @default(0)    // Misc fees, safety cert, etc.
+  extraCosts                Float           @default(0)      // Safety cert, buffer costs
   
   // Repair Details (JSON for flexibility with multiple repairs)
   repairs                   Json?           // { items: [{ description: "Front bumper", partsLink: "...", partsCost: 200, labour: 150 }] }

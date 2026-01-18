@@ -168,7 +168,7 @@ export function Listing({ listing }: { listing: ListingType }) {
             href={listing.carGurusLink || "#"}
             target="_blank"
             rel="noopener noreferrer"
-            className="bg-green-100 text-green-700 px-3 py-1.5 rounded-full text-sm font-semibold border border-green-200 hover:bg-green-200 transition-colors flex items-center gap-1"
+            className="bg-green-100 text-green-700 px-3 py-1.5 rounded-full text-m font-semibold border border-green-200 hover:bg-green-200 transition-colors flex items-center gap-1"
             onClick={(e) => {
               if (!listing.carGurusLink) {
                 e.preventDefault();
